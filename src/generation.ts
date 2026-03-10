@@ -56,18 +56,35 @@ export function splitIntoBatches(notes: NoteSource[]): NoteSource[][] {
     return batches;
 }
 
+function buildFormattingInstructions(settings: ActiveRecallSettings): {
+    hintInstruction: string;
+    checkInstruction: string;
+    languageInstruction: string;
+    customInstruction: string;
+} {
+    return {
+        hintInstruction: settings.generateHints
+            ? `- After each question, add a collapsible hint using this exact callout syntax:\n  > [!hint]-\n  > Your hint text here`
+            : '',
+        checkInstruction: settings.generateReferenceAnswers
+            ? `- After each hint (or question if hints are disabled), add a collapsible reference answer:\n  > [!check]-\n  > Your reference answer here`
+            : '',
+        languageInstruction: settings.language
+            ? `\nWrite all output in ${settings.language}.`
+            : '',
+        customInstruction: settings.customInstructions
+            ? `\n${settings.customInstructions}`
+            : '',
+    };
+}
+
 export function buildBatchPrompt(notes: NoteSource[], settings: ActiveRecallSettings): string {
     const noteBlocks = notes
         .map((n) => `=== Note: ${n.name} ===\n${n.content}`)
         .join('\n\n');
 
-    const hintInstruction = settings.generateHints
-        ? `- After each question, add a collapsible hint using this exact callout syntax:\n  > [!hint]-\n  > Your hint text here`
-        : '';
-
-    const checkInstruction = settings.generateReferenceAnswers
-        ? `- After each hint (or question if hints are disabled), add a collapsible reference answer:\n  > [!check]-\n  > Your reference answer here`
-        : '';
+    const { hintInstruction, checkInstruction, languageInstruction, customInstruction } =
+        buildFormattingInstructions(settings);
 
     const conceptMapInstruction = settings.generateConceptMap
         ? `## Concept Map
@@ -78,14 +95,6 @@ Format:
 (Max 2 levels. Then add a horizontal rule: ---)
 
 `
-        : '';
-
-    const languageInstruction = settings.language
-        ? `\nWrite all output in ${settings.language}.`
-        : '';
-
-    const customInstruction = settings.customInstructions
-        ? `\n${settings.customInstructions}`
         : '';
 
     return `${noteBlocks}
@@ -115,26 +124,13 @@ export function buildSynthesisPrompt(partialOutputs: string[], settings: ActiveR
         .map((output, i) => `=== Partial Output ${i + 1} ===\n${output}`)
         .join('\n\n');
 
-    const hintInstruction = settings.generateHints
-        ? `- Each question should have a collapsible hint:\n  > [!hint]-\n  > Your hint text here`
-        : '';
-
-    const checkInstruction = settings.generateReferenceAnswers
-        ? `- Each question should have a collapsible reference answer:\n  > [!check]-\n  > Your reference answer here`
-        : '';
+    const { hintInstruction, checkInstruction, languageInstruction, customInstruction } =
+        buildFormattingInstructions(settings);
 
     const conceptMapInstruction = settings.generateConceptMap
         ? `Include a ## Concept Map section at the top as a 2-level bullet hierarchy, followed by a horizontal rule (---).
 
 `
-        : '';
-
-    const languageInstruction = settings.language
-        ? `\nWrite all output in ${settings.language}.`
-        : '';
-
-    const customInstruction = settings.customInstructions
-        ? `\n${settings.customInstructions}`
         : '';
 
     return `${combined}
