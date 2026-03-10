@@ -50,7 +50,7 @@
 
 ### Distribution
 
-- [ ] **DIST-01**: `manifest.json` meets Obsidian community store requirements: plugin ID `ai-active-recall` (no `obsidian-` prefix), `minAppVersion` set appropriately, `isDesktopOnly` accurate
+- [x] **DIST-01**: `manifest.json` meets Obsidian community store requirements: plugin ID `ai-active-recall` (no `obsidian-` prefix), `minAppVersion` set appropriately, `isDesktopOnly` accurate
 - [ ] **DIST-02**: README covers installation steps and API key configuration
 
 ## v2 Requirements
@@ -118,7 +118,7 @@
 | UI-02 | Phase 4 | Pending |
 | FB-01 | Phase 3 | Pending |
 | FB-02 | Phase 3 | Pending |
-| DIST-01 | Phase 1 | Pending |
+| DIST-01 | Phase 1 | Complete |
 | DIST-02 | Phase 5 | Pending |
 
 **Coverage:**

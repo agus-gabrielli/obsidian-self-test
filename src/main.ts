@@ -29,3 +29,4 @@ export default class ActiveRecallPlugin extends Plugin {
         await this.saveData(this.settings);
     }
 }
+
