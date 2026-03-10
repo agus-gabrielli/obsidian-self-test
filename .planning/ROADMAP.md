@@ -58,7 +58,12 @@ Plans:
   3. A visible progress indicator appears during generation and disappears when complete
   4. When the API key is wrong or the network fails, the user sees a plain-language error message (not a raw API error string)
   5. Re-running generation on a folder that already has _self-test.md overwrites it silently with fresh output
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 03-01-PLAN.md - Install Jest test infrastructure, create obsidian mock, write 14 stub tests covering all 12 requirements
+- [ ] 03-02-PLAN.md - Implement GenerationService in src/generation.ts via TDD - all 14 tests green
+- [ ] 03-03-PLAN.md - Wire status bar item and command into main.ts; human-verify full flow in Obsidian
 
 ### Phase 4: Commands and Sidebar
 **Goal**: Users can trigger generation from three surfaces - command palette, folder context menu, and the sidebar panel - and the sidebar accurately reflects which folders have self-tests and which do not
@@ -91,6 +96,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 |-------|----------------|--------|-----------|
 | 1. Foundation | 1/1 | Complete | 2026-03-09 |
 | 2. Settings | 1/1 | Complete   | 2026-03-10 |
-| 3. Generation Pipeline | 0/? | Not started | - |
+| 3. Generation Pipeline | 0/3 | Not started | - |
 | 4. Commands and Sidebar | 0/? | Not started | - |
 | 5. Polish and Release | 0/? | Not started | - |
