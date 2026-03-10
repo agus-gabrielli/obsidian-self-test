@@ -23,14 +23,14 @@
 
 ### Settings
 
-- [ ] **SET-01**: User can configure LLM provider (OpenAI in v1; interface abstracted for future providers)
-- [ ] **SET-02**: User can enter and save their API key (masked password field) with a visible warning about Git exposure risk in the settings UI
-- [ ] **SET-03**: User can select the model (text input, defaults to `gpt-4o-mini`)
-- [ ] **SET-04**: User can select output language (dropdown or text; default: match notes)
-- [ ] **SET-05**: User can toggle hint generation on/off (default: on)
-- [ ] **SET-06**: User can toggle reference answer generation on/off (default: on)
-- [ ] **SET-07**: User can toggle concept map generation on/off (default: on)
-- [ ] **SET-08**: User can provide custom instructions appended to the LLM prompt (text area, optional)
+- [x] **SET-01**: User can configure LLM provider (OpenAI in v1; interface abstracted for future providers)
+- [x] **SET-02**: User can enter and save their API key (masked password field) with a visible warning about Git exposure risk in the settings UI
+- [x] **SET-03**: User can select the model (text input, defaults to `gpt-4o-mini`)
+- [x] **SET-04**: User can select output language (dropdown or text; default: match notes)
+- [x] **SET-05**: User can toggle hint generation on/off (default: on)
+- [x] **SET-06**: User can toggle reference answer generation on/off (default: on)
+- [x] **SET-07**: User can toggle concept map generation on/off (default: on)
+- [x] **SET-08**: User can provide custom instructions appended to the LLM prompt (text area, optional)
 
 ### Commands & Entry Points
 
@@ -103,14 +103,14 @@
 | CTX-01 | Phase 3 | Pending |
 | CTX-02 | Phase 3 | Pending |
 | CTX-03 | Phase 3 | Pending |
-| SET-01 | Phase 2 | Pending |
-| SET-02 | Phase 2 | Pending |
-| SET-03 | Phase 2 | Pending |
-| SET-04 | Phase 2 | Pending |
-| SET-05 | Phase 2 | Pending |
-| SET-06 | Phase 2 | Pending |
-| SET-07 | Phase 2 | Pending |
-| SET-08 | Phase 2 | Pending |
+| SET-01 | Phase 2 | Complete |
+| SET-02 | Phase 2 | Complete |
+| SET-03 | Phase 2 | Complete |
+| SET-04 | Phase 2 | Complete |
+| SET-05 | Phase 2 | Complete |
+| SET-06 | Phase 2 | Complete |
+| SET-07 | Phase 2 | Complete |
+| SET-08 | Phase 2 | Complete |
 | CMD-01 | Phase 4 | Pending |
 | CMD-02 | Phase 4 | Pending |
 | CMD-03 | Phase 4 | Pending |

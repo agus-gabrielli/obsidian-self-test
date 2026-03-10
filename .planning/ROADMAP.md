@@ -13,7 +13,7 @@ Five phases that follow the natural dependency order of the plugin: first a work
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Working plugin scaffold loads in Obsidian with correct manifest, build config, and requestUrl() HTTP pattern locked in
-- [ ] **Phase 2: Settings** - Full settings tab with provider, API key, model, language, toggles, and custom instructions persists correctly
+- [x] **Phase 2: Settings** - Full settings tab with provider, API key, model, language, toggles, and custom instructions persists correctly (completed 2026-03-10)
 - [ ] **Phase 3: Generation Pipeline** - End-to-end self-test generation from note collection through LLM call to _self-test.md output, including batch+synthesize and user feedback
 - [ ] **Phase 4: Commands and Sidebar** - All entry points wired (command palette, context menu, sidebar panel) calling the live generation pipeline
 - [ ] **Phase 5: Polish and Release** - Production-quality error handling, README, and verified store submission compliance
@@ -90,7 +90,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 1/1 | Complete | 2026-03-09 |
-| 2. Settings | 0/? | Not started | - |
+| 2. Settings | 1/1 | Complete   | 2026-03-10 |
 | 3. Generation Pipeline | 0/? | Not started | - |
 | 4. Commands and Sidebar | 0/? | Not started | - |
 | 5. Polish and Release | 0/? | Not started | - |

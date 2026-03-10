@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Phase 2 context gathered
-last_updated: "2026-03-10T01:20:53.029Z"
+stopped_at: "02-01 checkpoint:human-verify - Tasks 1 and 2 complete, awaiting Obsidian verification"
+last_updated: "2026-03-10T01:38:12.600Z"
 last_activity: 2026-03-09 - 01-01 all 3 tasks done including Obsidian human-verify (all 5 checks passed)
 progress:
   total_phases: 5
-  completed_phases: 1
-  total_plans: 1
-  completed_plans: 1
+  completed_phases: 2
+  total_plans: 2
+  completed_plans: 2
   percent: 5
 ---
 
@@ -65,6 +65,9 @@ Recent decisions affecting current work:
 - Overwrite on regeneration, no backup - simplest and most predictable.
 - DEFAULT_SETTINGS is {} in Phase 1 - Phase 2 fills in all fields.
 - throw:false on requestUrl calls - non-2xx status does not crash onload().
+- [Phase 02-settings]: Custom instructions textarea saves on blur only - not onChange - to avoid excessive saveData calls on every keystroke
+- [Phase 02-settings]: API key masked via inputEl.type = 'password' mutation inside addText callback - Obsidian has no native password field API
+- [Phase 02-settings]: Provider dropdown locked via setDisabled(true) on the Setting component wrapper (not the inner dropdown)
 
 ### Pending Todos
 
@@ -76,6 +79,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-10T01:20:53.027Z
-Stopped at: Phase 2 context gathered
-Resume file: .planning/phases/02-settings/02-CONTEXT.md
+Last session: 2026-03-10T01:38:06.998Z
+Stopped at: 02-01 checkpoint:human-verify - Tasks 1 and 2 complete, awaiting Obsidian verification
+Resume file: None
