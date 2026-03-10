@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Working plugin scaffold loads in Obsidian with correct manifest, build config, and requestUrl() HTTP pattern locked in
 - [x] **Phase 2: Settings** - Full settings tab with provider, API key, model, language, toggles, and custom instructions persists correctly (completed 2026-03-10)
-- [ ] **Phase 3: Generation Pipeline** - End-to-end self-test generation from note collection through LLM call to _self-test.md output, including batch+synthesize and user feedback
+- [x] **Phase 3: Generation Pipeline** - End-to-end self-test generation from note collection through LLM call to _self-test.md output, including batch+synthesize and user feedback (completed 2026-03-10)
 - [ ] **Phase 4: Commands and Sidebar** - All entry points wired (command palette, context menu, sidebar panel) calling the live generation pipeline
 - [ ] **Phase 5: Polish and Release** - Production-quality error handling, README, and verified store submission compliance
 
@@ -61,9 +61,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 03-01-PLAN.md - Install Jest test infrastructure, create obsidian mock, write 14 stub tests covering all 12 requirements
-- [ ] 03-02-PLAN.md - Implement GenerationService in src/generation.ts via TDD - all 14 tests green
-- [ ] 03-03-PLAN.md - Wire status bar item and command into main.ts; human-verify full flow in Obsidian
+- [x] 03-01-PLAN.md - Install Jest test infrastructure, create obsidian mock, write 14 stub tests covering all 12 requirements
+- [x] 03-02-PLAN.md - Implement GenerationService in src/generation.ts via TDD - all 14 tests green
+- [x] 03-03-PLAN.md - Wire status bar item and command into main.ts; human-verify full flow in Obsidian
 
 ### Phase 4: Commands and Sidebar
 **Goal**: Users can trigger generation from three surfaces - command palette, folder context menu, and the sidebar panel - and the sidebar accurately reflects which folders have self-tests and which do not
@@ -96,6 +96,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 |-------|----------------|--------|-----------|
 | 1. Foundation | 1/1 | Complete | 2026-03-09 |
 | 2. Settings | 1/1 | Complete   | 2026-03-10 |
-| 3. Generation Pipeline | 2/3 | In Progress|  |
+| 3. Generation Pipeline | 3/3 | Complete | 2026-03-10 |
 | 4. Commands and Sidebar | 0/? | Not started | - |
 | 5. Polish and Release | 0/? | Not started | - |

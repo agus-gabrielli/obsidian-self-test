@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Phase 2 finished; ready to begin Phase 3 (Generation)
-stopped_at: Completed 03-generation-pipeline 03-02-PLAN.md
-last_updated: "2026-03-10T02:45:37.600Z"
-last_activity: 2026-03-10 - 02-01 all 3 tasks done including Obsidian human-verify (all 5 checks passed)
+status: Phase 3 plan 03 complete - all 3 Phase 3 plans done; ready to begin Phase 4
+stopped_at: Completed 03-generation-pipeline 03-03-PLAN.md
+last_updated: "2026-03-10T03:30:00.000Z"
+last_activity: 2026-03-10 - 03-03 wired GenerationService command + E2E verified in Obsidian; two callout rendering bugs fixed
 progress:
   total_phases: 5
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 5
-  completed_plans: 4
-  percent: 40
+  completed_plans: 5
+  percent: 60
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-09)
 
 **Core value:** Users can generate a structured self-test from any folder of notes in one click, turning passive note review into active recall practice.
-**Current focus:** Phase 2 - Settings (complete) -> Phase 3 - Generation
+**Current focus:** Phase 3 - Generation Pipeline (complete) -> Phase 4 - Review UI
 
 ## Current Position
 
-Phase: 2 of 5 (Settings) - COMPLETE
-Plan: 02-01 complete - all plans in Phase 2 done
-Status: Phase 2 finished; ready to begin Phase 3 (Generation)
-Last activity: 2026-03-10 - 02-01 all 3 tasks done including Obsidian human-verify (all 5 checks passed)
+Phase: 3 of 5 (Generation Pipeline) - COMPLETE
+Plan: 03-03 complete - all plans in Phase 3 done
+Status: Phase 3 complete; ready to begin Phase 4 (Review UI)
+Last activity: 2026-03-10 - 03-03 wired GenerationService command + E2E verified in Obsidian; two callout rendering bugs fixed
 
-Progress: [####░░░░░░] 40%
+Progress: [######░░░░] 60%
 
 ## Performance Metrics
 
@@ -53,6 +53,7 @@ Progress: [####░░░░░░] 40%
 *Updated after each plan completion*
 | Phase 03-generation-pipeline P01 | 8 | 2 tasks | 5 files |
 | Phase 03-generation-pipeline P02 | 4min | 3 tasks | 2 files |
+| Phase 03-generation-pipeline P03 | ~30min | 2 tasks | 1 file |
 
 ## Accumulated Context
 
@@ -76,6 +77,9 @@ Recent decisions affecting current work:
 - [Phase 03-generation-pipeline]: test.todo() stubs used in generation.test.ts with commented-out import - Plan 02 uncommenting signals implementation readiness without rewriting structure
 - [Phase 03-generation-pipeline]: FB-02 tested via classifyError() directly - cleaner than spying on Notice constructor internals
 - [Phase 03-generation-pipeline]: buildFormattingInstructions extracted as private helper shared by buildBatchPrompt and buildSynthesisPrompt to eliminate prompt instruction duplication
+- [Phase 03-generation-pipeline]: Concept map prompt outputs flat concept names only (no sub-bullets/explanations) - required for correct callout rendering in Obsidian
+- [Phase 03-generation-pipeline]: Blank line required between adjacent [!hint] and [!check] callouts - without it Obsidian nests the second inside the first
+- [Phase 03-generation-pipeline]: addCommand() called in onload() with status bar item created once and injected - folder resolved at call time from activeFile.parent.path
 
 ### Pending Todos
 
@@ -87,6 +91,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-03-10T02:45:31.973Z
-Stopped at: Completed 03-generation-pipeline 03-02-PLAN.md
+Last session: 2026-03-10T03:30:00.000Z
+Stopped at: Completed 03-generation-pipeline 03-03-PLAN.md
 Resume file: None

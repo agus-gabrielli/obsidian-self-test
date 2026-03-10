@@ -34,7 +34,7 @@
 
 ### Commands & Entry Points
 
-- [ ] **CMD-01**: Command palette entry: "Generate Self-Test for Current Folder" — generates `_self-test.md` for the folder containing the active note
+- [x] **CMD-01**: Command palette entry: "Generate Self-Test for Current Folder" — generates `_self-test.md` for the folder containing the active note
 - [ ] **CMD-02**: Command palette entry: "Open Active Recall Panel" — opens or focuses the sidebar panel
 - [ ] **CMD-03**: Folder context menu item: "Generate Self-Test" — available on right-click of any folder in the file explorer
 
@@ -111,7 +111,7 @@
 | SET-06 | Phase 2 | Complete |
 | SET-07 | Phase 2 | Complete |
 | SET-08 | Phase 2 | Complete |
-| CMD-01 | Phase 4 | Pending |
+| CMD-01 | Phase 3 | Complete |
 | CMD-02 | Phase 4 | Pending |
 | CMD-03 | Phase 4 | Pending |
 | UI-01 | Phase 4 | Pending |
