@@ -1,5 +1,5 @@
 /**
- * Mock implementations of Obsidian classes needed by generation.ts
+ * Mock implementations of Obsidian classes needed by generation.ts and sidebar.ts
  * Used by Jest via moduleNameMapper: { '^obsidian$': '<rootDir>/src/__mocks__/obsidian.ts' }
  */
 
@@ -29,6 +29,9 @@ export class TFolder {
     this.children = children;
   }
 }
+
+// Type alias for abstract file union - used by context menu handlers
+export type TAbstractFile = TFile | TFolder;
 
 export class Notice {
   message: string;
@@ -75,16 +78,33 @@ export class Menu {
   getItems() { return this.items; }
 }
 
+// Minimal App interface - production type from Obsidian
+export interface App {
+  vault: {
+    getAbstractFileByPath(path: string): TFile | TFolder | null;
+    read(file: TFile): Promise<string>;
+    create(path: string, content: string): Promise<TFile>;
+    modify(file: TFile, content: string): Promise<void>;
+    getAllFolders(includeRoot?: boolean): TFolder[];
+  };
+  workspace: {
+    getLeavesOfType(type: string): WorkspaceLeaf[];
+    getRightLeaf(split: boolean): WorkspaceLeaf;
+    revealLeaf(leaf: WorkspaceLeaf): void;
+  };
+}
+
 /**
  * Factory function for creating a mock Obsidian App.
  * Not an Obsidian export - internal test helper.
  */
+// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export function createMockApp() {
   return {
     vault: {
       getAbstractFileByPath: jest.fn().mockReturnValue(null),
       read: jest.fn().mockResolvedValue(''),
-      create: jest.fn().mockImplementation((path: string, content: string) => {
+      create: jest.fn().mockImplementation((path: string, _content: string) => {
         return Promise.resolve(new TFile(path));
       }),
       modify: jest.fn().mockResolvedValue(undefined),
@@ -96,6 +116,37 @@ export function createMockApp() {
       revealLeaf: jest.fn().mockResolvedValue(undefined),
     },
   };
+}
+
+// Helper: make a mock DOM-like element that sidebar.ts can call createEl/createDiv/createSpan on
+function makeMockEl(): {
+  empty: jest.Mock;
+  createDiv: jest.Mock;
+  createEl: jest.Mock;
+  createSpan: jest.Mock;
+  addEventListener: jest.Mock;
+} {
+  return {
+    empty: jest.fn(),
+    createDiv: jest.fn().mockImplementation(() => makeMockEl()),
+    createEl: jest.fn().mockImplementation(() => makeMockEl()),
+    createSpan: jest.fn().mockImplementation(() => makeMockEl()),
+    addEventListener: jest.fn(),
+  };
+}
+
+// Minimal ItemView base class - allows ActiveRecallSidebarView to extend it in tests
+export class ItemView {
+  contentEl: ReturnType<typeof makeMockEl>;
+  leaf: WorkspaceLeaf;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  app: any;
+
+  constructor(leaf: WorkspaceLeaf) {
+    this.leaf = leaf;
+    this.contentEl = makeMockEl();
+    this.app = createMockApp();
+  }
 }
 
 /**
