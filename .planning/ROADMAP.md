@@ -78,8 +78,8 @@ Plans:
 
 Plans:
 - [x] 04-01-PLAN.md - Extend obsidian mock and write 10 failing sidebar tests (Wave 1)
-- [ ] 04-02-PLAN.md - Implement src/sidebar.ts with ActiveRecallSidebarView and helper functions (Wave 2)
-- [ ] 04-03-PLAN.md - Wire sidebar, CMD-02, CMD-03, ribbon into main.ts; human-verify in Obsidian (Wave 3)
+- [x] 04-02-PLAN.md - Implement src/sidebar.ts with ActiveRecallSidebarView and helper functions (Wave 2)
+- [x] 04-03-PLAN.md - Wire sidebar, CMD-02, CMD-03, ribbon into main.ts; human-verify in Obsidian (Wave 3)
 
 ### Phase 5: Polish and Release
 **Goal**: The plugin is ready for Obsidian community store submission - README covers setup, error messages are user-friendly throughout, mobile works without crashes, and all store submission requirements are verified
@@ -90,7 +90,12 @@ Plans:
   2. All error states (wrong key, rate limit, network error, no notes in folder, context exceeded) produce a plain-language message with a clear action the user can take
   3. Plugin loads and generation runs on Obsidian mobile without crashing (API key input may be less ergonomic but must be functional)
   4. GitHub release tag matches manifest.json version exactly (no `v` prefix) and all store submission checklist items pass
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 05-01-PLAN.md - Fix classifyError() (429 wording, context-exceeded branch) and update manifest description (Wave 1)
+- [ ] 05-02-PLAN.md - Rewrite README.md for non-technical Obsidian users (Wave 1)
+- [ ] 05-03-PLAN.md - Mobile decision, production build, GitHub release, store submission PR (Wave 2)
 
 ## Progress
 
@@ -103,4 +108,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | 2. Settings | 1/1 | Complete   | 2026-03-10 |
 | 3. Generation Pipeline | 3/3 | Complete | 2026-03-10 |
 | 4. Commands and Sidebar | 3/3 | Complete   | 2026-03-12 |
-| 5. Polish and Release | 0/? | Not started | - |
+| 5. Polish and Release | 0/3 | Not started | - |
