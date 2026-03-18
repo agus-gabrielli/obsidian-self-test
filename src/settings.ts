@@ -3,6 +3,15 @@ import type ActiveRecallPlugin from './main';
 
 export type LLMProvider = 'openai';
 
+const CURATED_MODELS: string[] = [
+    'gpt-4o',
+    'gpt-4o-mini',
+    'gpt-4.1',
+    'gpt-4.1-mini',
+    'gpt-4.1-nano',
+];
+const CUSTOM_MODEL_VALUE = '__custom__';
+
 export interface ActiveRecallSettings {
     provider: LLMProvider;
     apiKey: string;
@@ -63,17 +72,44 @@ export class ActiveRecallSettingTab extends PluginSettingTab {
                     });
             });
 
+        // Determine if current model is in the curated list
+        const isCustomModel = !CURATED_MODELS.includes(this.plugin.settings.model);
+
         new Setting(containerEl)
             .setName('Model')
-            .setDesc('OpenAI model name to use for generation.')
-            .addText(text => text
-                .setPlaceholder('gpt-4o-mini')
-                .setValue(this.plugin.settings.model)
-                .onChange(async (value) => {
+            .setDesc('OpenAI model to use for generation.')
+            .addDropdown(drop => {
+                for (const m of CURATED_MODELS) {
+                    drop.addOption(m, m);
+                }
+                drop.addOption(CUSTOM_MODEL_VALUE, 'Custom model...');
+                drop.setValue(isCustomModel ? CUSTOM_MODEL_VALUE : this.plugin.settings.model);
+                drop.onChange(async (value) => {
+                    if (value === CUSTOM_MODEL_VALUE) {
+                        // Show custom input - re-render settings
+                        this.display();
+                        return;
+                    }
                     this.plugin.settings.model = value;
                     await this.plugin.saveSettings();
-                })
-            );
+                    this.display(); // Re-render to hide custom input if shown
+                });
+            });
+
+        // Show custom model text input when custom is selected
+        if (isCustomModel || this.plugin.settings.model === '') {
+            new Setting(containerEl)
+                .setName('Custom model name')
+                .setDesc('Enter the exact OpenAI model identifier.')
+                .addText(text => text
+                    .setPlaceholder('e.g. gpt-4o-2024-08-06')
+                    .setValue(isCustomModel ? this.plugin.settings.model : '')
+                    .onChange(async (value) => {
+                        this.plugin.settings.model = value;
+                        await this.plugin.saveSettings();
+                    })
+                );
+        }
 
         // Output section
         new Setting(containerEl).setName('Output').setHeading();
