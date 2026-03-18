@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 current_phase: 05-polish-and-release
-current_plan: 05-03 (task 3 pending human-action)
-status: executing
-last_updated: "2026-03-17T21:41:13.568Z"
+current_plan: 05-03 (closed - task 3 deferred to future final-release phase)
+status: planning
+last_updated: "2026-03-17"
 progress:
   total_phases: 5
   completed_phases: 5
@@ -23,11 +23,11 @@ See: .planning/PROJECT.md
 
 **Milestone:** v1.0 milestone
 **Milestone:** v1.0 milestone
-**Current phase:** 05-polish-and-release
-**Current plan:** 05-03 (Task 3 pending human-action)
-**Status:** In progress - awaiting store submission PR
+**Current phase:** 05-polish-and-release (closed)
+**Current plan:** 05-03 closed - Task 3 (store submission) deferred to a future final-release phase
+**Status:** Planning - defining improvement phases before final release
 
-**Phase 05 Progress:** Plan 03 Tasks 1-2 of 3 complete; Task 3 requires browser action
+**Phase 05 Progress:** Complete. Task 3 of 05-03 intentionally deferred - plugin improvements planned before store submission.
 
 ## Decisions
 
@@ -60,4 +60,12 @@ See: .planning/PROJECT.md
 - 2026-03-12: Executed 05-02 (README rewrite for non-technical users) - 1 task + 1 human-verify, 1 commit (1d87015) - human approved all 7 checks
 - 2026-03-12: Stopped at - Completed 05-02-PLAN.md
 - 2026-03-17: Executed 05-03 Tasks 1-2 (release build and GitHub release) - isDesktopOnly: true, 30 tests green, release 1.0.0 live with 3 assets (ec30b05)
-- 2026-03-17: Stopped at Task 3 checkpoint:human-action - awaiting store submission PR URL from user
+- 2026-03-17: Closed 05-03 - Task 3 (store submission) deferred by decision; plugin improvements planned before final public release
+- 2026-03-17: Phase 6 context gathered (prompt templates, concept map mermaid, hint quality, source traceability, model dropdown, README science section, sidebar loading)
+
+## Accumulated Context
+
+### Roadmap Evolution
+
+- Phase 6 added: Refinements and improvements
+- Phase 7 added: Final Release - recreate 1.0.0 GitHub release with updated assets + store submission PR (absorbs 05-03 Task 3)
