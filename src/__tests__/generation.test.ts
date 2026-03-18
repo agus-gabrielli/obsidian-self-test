@@ -71,10 +71,10 @@ describe('GenerationService', () => {
   });
 
   describe('GEN-02 / GEN-03: Prompt structure', () => {
-    test('prompt instructs LLM to order questions foundational to advanced', () => {
+    test('prompt instructs LLM to order questions general and simple to complex and specific', () => {
       const notes = [{ name: 'note1', content: 'some content' }];
       const prompt = buildBatchPrompt(notes, defaultSettings);
-      expect(prompt).toContain('foundational to advanced');
+      expect(prompt).toContain('general and simple to complex and specific');
     });
 
     test('prompt instructs LLM to omit category headings when content is too simple or narrow', () => {

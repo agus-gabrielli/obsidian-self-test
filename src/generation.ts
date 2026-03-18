@@ -1,5 +1,16 @@
 import { App, TFile, TFolder, Notice, requestUrl } from 'obsidian';
 import { ActiveRecallSettings } from './settings';
+import {
+    SYSTEM_MESSAGE,
+    batchTemplate,
+    synthesisTemplate,
+    render,
+    buildConceptMapInstruction,
+    buildHintInstruction,
+    buildCheckInstruction,
+    buildLanguageInstruction,
+    buildCustomInstruction,
+} from './prompts';
 
 export interface NoteSource {
     name: string;      // basename without extension
@@ -56,103 +67,38 @@ export function splitIntoBatches(notes: NoteSource[]): NoteSource[][] {
     return batches;
 }
 
-function buildFormattingInstructions(settings: ActiveRecallSettings): {
-    hintInstruction: string;
-    checkInstruction: string;
-    languageInstruction: string;
-    customInstruction: string;
-} {
-    return {
-        hintInstruction: settings.generateHints
-            ? `- After each question, add a collapsible hint using this exact callout syntax:\n  > [!hint]-\n  > Your hint text here\n  (blank line required after the callout block)`
-            : '',
-        checkInstruction: settings.generateReferenceAnswers
-            ? `- After each hint (or question if hints are disabled), add a collapsible reference answer with a blank line before it:\n  \n  > [!check]-\n  > Your reference answer here`
-            : '',
-        languageInstruction: settings.language
-            ? `\nWrite all output in ${settings.language}.`
-            : '',
-        customInstruction: settings.customInstructions
-            ? `\n${settings.customInstructions}`
-            : '',
-    };
-}
-
 export function buildBatchPrompt(notes: NoteSource[], settings: ActiveRecallSettings): string {
     const noteBlocks = notes
         .map((n) => `=== Note: ${n.name} ===\n${n.content}`)
         .join('\n\n');
 
-    const { hintInstruction, checkInstruction, languageInstruction, customInstruction } =
-        buildFormattingInstructions(settings);
+    const vars = {
+        noteBlocks,
+        conceptMapInstruction: buildConceptMapInstruction(settings.generateConceptMap),
+        hintInstruction: buildHintInstruction(settings.generateHints),
+        checkInstruction: buildCheckInstruction(settings.generateReferenceAnswers),
+        languageInstruction: buildLanguageInstruction(settings.language),
+        customInstruction: buildCustomInstruction(settings.customInstructions),
+    };
 
-    const conceptMapInstruction = settings.generateConceptMap
-        ? `## Concept Map
-List the main concepts covered as a flat bullet list — concept names only, no explanations or sub-bullets.
-Format:
-- Concept A
-- Concept B
-- Concept C
-(Then add a horizontal rule: ---)
-
-`
-        : '';
-
-    return `${noteBlocks}
-
----
-
-You are creating an active recall self-test from the notes above. Follow these instructions exactly:
-
-${conceptMapInstruction}Generate questions organized into categories. Order all questions from foundational to advanced.
-
-Use these category headings (H2 markdown):
-## Conceptual
-## Relationships
-## Application
-
-Omit any category heading when the content is too simple or too narrow to warrant it.
-
-Number questions within each category (1. 2. 3.).
-${hintInstruction}
-${checkInstruction}
-
-Output raw markdown only. Do not wrap output in code fences.${languageInstruction}${customInstruction}`;
+    return render(batchTemplate, vars);
 }
 
 export function buildSynthesisPrompt(partialOutputs: string[], settings: ActiveRecallSettings): string {
-    const combined = partialOutputs
+    const noteBlocks = partialOutputs
         .map((output, i) => `=== Partial Output ${i + 1} ===\n${output}`)
         .join('\n\n');
 
-    const { hintInstruction, checkInstruction, languageInstruction, customInstruction } =
-        buildFormattingInstructions(settings);
+    const vars = {
+        noteBlocks,
+        conceptMapInstruction: buildConceptMapInstruction(settings.generateConceptMap),
+        hintInstruction: buildHintInstruction(settings.generateHints),
+        checkInstruction: buildCheckInstruction(settings.generateReferenceAnswers),
+        languageInstruction: buildLanguageInstruction(settings.language),
+        customInstruction: buildCustomInstruction(settings.customInstructions),
+    };
 
-    const conceptMapInstruction = settings.generateConceptMap
-        ? `Include a ## Concept Map section at the top as a flat bullet list of concept names only (no explanations or sub-bullets), followed by a horizontal rule (---).
-
-`
-        : '';
-
-    return `${combined}
-
----
-
-You are receiving multiple partial question sets from a large folder of notes. Synthesize them into a single, unified self-test by:
-1. Deduplicating overlapping or redundant questions
-2. Reordering all questions from foundational to advanced
-3. Improving overall coherence and flow
-4. Organizing into category headings (omit any category when content is too simple or narrow):
-
-${conceptMapInstruction}## Conceptual
-## Relationships
-## Application
-
-Number questions within each category (1. 2. 3.).
-${hintInstruction}
-${checkInstruction}
-
-Output raw markdown only. Do not wrap output in code fences.${languageInstruction}${customInstruction}`;
+    return render(synthesisTemplate, vars);
 }
 
 export function buildMessages(
@@ -243,8 +189,6 @@ export class GenerationService {
             const notes = await readNotes(this.app, files);
             const batches = splitIntoBatches(notes);
             const folderName = folderPath.split('/').pop() ?? folderPath;
-
-            const SYSTEM_MESSAGE = 'You are an expert educator creating active recall study materials.';
 
             let finalContent: string;
 
