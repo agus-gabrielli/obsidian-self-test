@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 06-refinements-and-improvements
-current_plan: 06-03 (complete)
-status: in-progress
-last_updated: "2026-03-18"
+current_phase: 06-refinements-and-improvements (in progress)
+current_plan: 06-03 complete
+status: executing
+last_updated: "2026-03-18T12:43:16.145Z"
 progress:
   total_phases: 7
   completed_phases: 5
-  total_plans: 14
-  completed_plans: 12
+  total_plans: 15
+  completed_plans: 13
 ---
 
 # Session State
@@ -46,6 +46,7 @@ See: .planning/PROJECT.md
 - [Phase 05-03]: isDesktopOnly: true - mobile not tested before v1; safe default for store submission
 - 2026-03-18 (06-03): README science section uses inline citations in prose rather than a bibliography - more readable for non-academic Obsidian users
 - 2026-03-18 (06-03): Differentiation section closes with neutral bridging sentence to avoid competitive tone vs LLM Test Generator (Competence)
+- [Phase 06-02]: CURATED_MODELS = gpt-4o, gpt-4o-mini, gpt-4.1, gpt-4.1-mini, gpt-4.1-nano; isCustomModel check drives conditional rendering; generatingFolders Set with try/finally ensures cleanup
 
 ## Session Log
 
@@ -63,6 +64,8 @@ See: .planning/PROJECT.md
 - 2026-03-17: Executed 05-03 Tasks 1-2 (release build and GitHub release) - isDesktopOnly: true, 30 tests green, release 1.0.0 live with 3 assets (ec30b05)
 - 2026-03-17: Closed 05-03 - Task 3 (store submission) deferred by decision; plugin improvements planned before final public release
 - 2026-03-17: Phase 6 context gathered (prompt templates, concept map mermaid, hint quality, source traceability, model dropdown, README science section, sidebar loading)
+- 2026-03-18: Executed 06-02 (model dropdown + sidebar loading indicator) - 2 tasks, 2 commits (6dac1ca, c3ba250)
+- 2026-03-18: Stopped at - Completed 06-02-PLAN.md
 - 2026-03-18: Executed 06-03 (README science foundations and differentiation) - 1 task, 1 commit (8164e4e)
 - 2026-03-18: Stopped at - Completed 06-03-PLAN.md
 
