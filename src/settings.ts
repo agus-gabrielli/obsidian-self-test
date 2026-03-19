@@ -4,11 +4,14 @@ import type ActiveRecallPlugin from './main';
 export type LLMProvider = 'openai';
 
 const CURATED_MODELS: string[] = [
-    'gpt-4o',
-    'gpt-4o-mini',
+    'gpt-5.4',
+    'gpt-5.4-mini',
+    'gpt-5.4-nano',
     'gpt-4.1',
     'gpt-4.1-mini',
     'gpt-4.1-nano',
+    'gpt-4o',
+    'gpt-4o-mini',
 ];
 const CUSTOM_MODEL_VALUE = '__custom__';
 
@@ -26,7 +29,7 @@ export interface ActiveRecallSettings {
 export const DEFAULT_SETTINGS: ActiveRecallSettings = {
     provider: 'openai',
     apiKey: '',
-    model: 'gpt-4o-mini',
+    model: 'gpt-5.4-mini',
     language: '',
     generateHints: true,
     generateReferenceAnswers: true,
@@ -36,6 +39,7 @@ export const DEFAULT_SETTINGS: ActiveRecallSettings = {
 
 export class ActiveRecallSettingTab extends PluginSettingTab {
     plugin: ActiveRecallPlugin;
+    private showCustomInput = false;
 
     constructor(app: App, plugin: ActiveRecallPlugin) {
         super(app, plugin);
@@ -73,7 +77,9 @@ export class ActiveRecallSettingTab extends PluginSettingTab {
             });
 
         // Determine if current model is in the curated list
-        const isCustomModel = !CURATED_MODELS.includes(this.plugin.settings.model);
+        const isCustomModel = !CURATED_MODELS.includes(this.plugin.settings.model)
+            || this.plugin.settings.model === '';
+        if (isCustomModel) this.showCustomInput = true;
 
         new Setting(containerEl)
             .setName('Model')
@@ -83,21 +89,22 @@ export class ActiveRecallSettingTab extends PluginSettingTab {
                     drop.addOption(m, m);
                 }
                 drop.addOption(CUSTOM_MODEL_VALUE, 'Custom model...');
-                drop.setValue(isCustomModel ? CUSTOM_MODEL_VALUE : this.plugin.settings.model);
+                drop.setValue(this.showCustomInput ? CUSTOM_MODEL_VALUE : this.plugin.settings.model);
                 drop.onChange(async (value) => {
                     if (value === CUSTOM_MODEL_VALUE) {
-                        // Show custom input - re-render settings
+                        this.showCustomInput = true;
                         this.display();
                         return;
                     }
+                    this.showCustomInput = false;
                     this.plugin.settings.model = value;
                     await this.plugin.saveSettings();
-                    this.display(); // Re-render to hide custom input if shown
+                    this.display();
                 });
             });
 
         // Show custom model text input when custom is selected
-        if (isCustomModel || this.plugin.settings.model === '') {
+        if (this.showCustomInput) {
             new Setting(containerEl)
                 .setName('Custom model name')
                 .setDesc('Enter the exact OpenAI model identifier.')

@@ -104,7 +104,12 @@ export const batchTemplate = `{{noteBlocks}}
 
 You are creating an active recall self-test from the notes above. Follow these instructions exactly:
 
-{{conceptMapInstruction}}Generate questions organized into categories. Within each category, order questions from general and simple to complex and specific. Start with questions that test basic understanding, then progress to questions requiring deeper analysis or synthesis.
+{{conceptMapInstruction}}Generate questions that cover ALL the material in the notes above. Do not limit yourself to a fixed number of questions per category - produce as many questions as needed so that every key concept, fact, relationship, and application in the notes is tested at least once. The goal is comprehensive coverage: a student using this self-test should be able to verify recall of everything in the notes.
+
+Each question must be:
+- Open-ended (no multiple choice, no true/false, no fill-in-the-blank)
+- Short answer - answerable in 1-3 sentences
+- Minimal prompt - keep the question itself brief and direct, no lengthy preambles
 
 Use these category headings (H2 markdown):
 ## Conceptual
@@ -113,7 +118,7 @@ Use these category headings (H2 markdown):
 
 Omit any category heading when the content is too simple or too narrow to warrant it.
 
-Number questions within each category (1. 2. 3.).
+Within each category, order questions from general and simple to complex and specific. Number questions within each category (1. 2. 3.).
 {{hintInstruction}}
 {{checkInstruction}}
 
@@ -137,7 +142,7 @@ You are receiving multiple partial question sets from a large folder of notes. S
 ## Relationships
 ## Application
 
-Number questions within each category (1. 2. 3.). Within each category, order questions from general and simple to complex and specific.
+Cover ALL the material - produce as many questions as needed so every key concept, fact, relationship, and application is tested. Each question must be open-ended, short answer (1-3 sentences), and minimal prompt (brief and direct). Number questions within each category (1. 2. 3.). Within each category, order questions from general and simple to complex and specific.
 {{hintInstruction}}
 {{checkInstruction}}
 

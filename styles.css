@@ -67,13 +67,21 @@
   font-size: 0.8em;
   padding: 3px 10px;
   cursor: pointer;
+  min-width: 90px;
+  min-height: 28px;
+  text-align: center;
+  box-sizing: border-box;
 }
 
 .active-recall-loading {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   flex-shrink: 0;
+  min-width: 90px;
+  min-height: 28px;
+  box-sizing: border-box;
 }
 
 .active-recall-spinner {
