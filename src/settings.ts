@@ -107,7 +107,7 @@ export class ActiveRecallSettingTab extends PluginSettingTab {
                 .setName('Custom model name')
                 .setDesc('Enter the exact OpenAI model identifier.')
                 .addText(text => text
-                    .setPlaceholder('e.g. gpt-5.4-2026-03-05')
+                    .setPlaceholder('e.g. gpt-5.4-mini')
                     .setValue(this.plugin.settings.model)
                     .onChange(async (value) => {
                         this.plugin.settings.model = value;
