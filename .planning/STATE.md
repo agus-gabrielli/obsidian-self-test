@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 06-refinements-and-improvements (in progress)
-current_plan: 06-03 complete
+current_phase: 06-refinements-and-improvements (complete)
+current_plan: 06-04 complete
 status: executing
-last_updated: "2026-03-18T12:44:15.539Z"
+last_updated: "2026-03-18T14:00:00.000Z"
 progress:
   total_phases: 7
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 15
-  completed_plans: 14
+  completed_plans: 15
 ---
 
 # Session State
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md
 **Current plan:** 06-03 complete
 **Status:** In progress - executing refinement plans
 
-**Phase 06 Progress:** All plans complete - 06-01 (prompt extraction), 06-02 (model dropdown + loading indicator), 06-03 (README science section).
+**Phase 06 Progress:** All 4 plans complete - 06-01 (prompt extraction), 06-02 (model dropdown + loading indicator), 06-03 (README science section), 06-04 (build verify + human verification with post-checkpoint fixes).
 
 ## Decisions
 
@@ -49,6 +49,9 @@ See: .planning/PROJECT.md
 - [Phase 06-02]: CURATED_MODELS = gpt-4o, gpt-4o-mini, gpt-4.1, gpt-4.1-mini, gpt-4.1-nano; isCustomModel check drives conditional rendering; generatingFolders Set with try/finally ensures cleanup
 - [Phase 06-01]: render() uses split().join() for {{placeholder}} substitution - simple, no regex edge cases
 - [Phase 06-01]: prompts.ts is single source of truth for all LLM prompt text; generation.ts delegates via render()
+- 2026-03-18 (06-04): Custom model input persists via settings.customModel - read back on settings panel open
+- 2026-03-18 (06-04): Spinner covers all three generation entry points (sidebar, command palette, context menu)
+- 2026-03-18 (06-04): Callout indentation in prompts uses 4-space indent under > [!check] for Obsidian callout parser
 
 ## Session Log
 
@@ -72,6 +75,8 @@ See: .planning/PROJECT.md
 - 2026-03-18: Stopped at - Completed 06-02-PLAN.md
 - 2026-03-18: Executed 06-03 (README science foundations and differentiation) - 1 task, 1 commit (8164e4e)
 - 2026-03-18: Stopped at - Completed 06-03-PLAN.md
+- 2026-03-18: Executed 06-04 (build verification + human verify) - 59 tests pass, user approved all 17 checks, 4 post-checkpoint bug fixes (f338b83, f30261f, 5427c75, 580e7c1)
+- 2026-03-18: Stopped at - Completed 06-04-PLAN.md (Phase 06 complete)
 
 ## Accumulated Context
 

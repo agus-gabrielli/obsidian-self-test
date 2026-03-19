@@ -109,14 +109,14 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7
 | 3. Generation Pipeline | 3/3 | Complete | 2026-03-10 |
 | 4. Commands and Sidebar | 3/3 | Complete   | 2026-03-12 |
 | 5. Polish and Release | 3/3 | Complete | 2026-03-17 |
-| 6. Refinements | 3/4 | In Progress|  |
+| 6. Refinements | 4/4 | Complete   | 2026-03-19 |
 
 ### Phase 6: Refinements and improvements
 
 **Goal:** Improve prompt quality (Mermaid concept maps, contextual hints, source traceability), UX polish (model dropdown, sidebar loading spinner), and README (science foundations, differentiation) before the final store submission in Phase 7
 **Requirements**: REFINE-PROMPTS, REFINE-UI, REFINE-README, REFINE-VERIFY
 **Depends on:** Phase 5
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 - [ ] 06-01-PLAN.md - Extract prompts to src/prompts.ts with Mermaid concept maps, contextual hints, source traceability (Wave 1)
