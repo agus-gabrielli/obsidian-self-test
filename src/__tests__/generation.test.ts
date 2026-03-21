@@ -30,6 +30,7 @@ const defaultSettings: ActiveRecallSettings = {
   generateReferenceAnswers: true,
   generateConceptMap: true,
   customInstructions: '',
+  singleNoteOutputMode: 'same-folder',
 };
 
 beforeEach(() => {
@@ -170,7 +171,7 @@ describe('GenerationService', () => {
 
       const statusBar = createMockStatusBarItem();
       const service = new GenerationService(app as any, defaultSettings, statusBar);
-      await service.generate('folder');
+      await service.generate({ mode: 'folder', folderPath: 'folder' });
 
       expect(requestUrl).toHaveBeenCalledTimes(1);
     });
@@ -190,7 +191,7 @@ describe('GenerationService', () => {
 
       const statusBar = createMockStatusBarItem();
       const service = new GenerationService(app as any, defaultSettings, statusBar);
-      await service.generate('folder');
+      await service.generate({ mode: 'folder', folderPath: 'folder' });
 
       // 2 batch calls + 1 synthesis call = 3 total
       expect(requestUrl).toHaveBeenCalledTimes(3);
@@ -212,7 +213,7 @@ describe('GenerationService', () => {
 
       const statusBar = createMockStatusBarItem();
       const service = new GenerationService(app as any, defaultSettings, statusBar);
-      await service.generate('folder');
+      await service.generate({ mode: 'folder', folderPath: 'folder' });
 
       expect(statusBar.setText).toHaveBeenCalledWith(expect.stringContaining('Generating'));
       expect(statusBar.setText).toHaveBeenLastCalledWith('');
@@ -472,11 +473,12 @@ describe('GenerationService provider error label', () => {
       generateReferenceAnswers: true,
       generateConceptMap: true,
       customInstructions: '',
+      singleNoteOutputMode: 'same-folder',
     };
 
     const statusBar = createMockStatusBarItem();
     const service = new GenerationService(app as never, geminiSettings, statusBar);
-    await service.generate('folder');
+    await service.generate({ mode: 'folder', folderPath: 'folder' });
 
     const noticeCalls = (Notice as jest.Mock).mock.calls.map((c: [string]) => c[0]);
     expect(noticeCalls.some((msg: string) => msg.includes('Gemini'))).toBe(true);

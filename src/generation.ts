@@ -1,6 +1,16 @@
 import { App, TFile, TFolder, Notice, requestUrl } from 'obsidian';
 import { ActiveRecallSettings, LLMProvider, PROVIDER_CONFIG } from './settings';
 import {
+    CollectionSpec,
+    collectNotesByTag,
+    collectNotesByLinks,
+    buildTagOutputPath,
+    buildLinksOutputPath,
+    buildNoteOutputPath,
+    writeOutputToPath,
+    buildFrontmatter,
+} from './collectors';
+import {
     SYSTEM_MESSAGE,
     batchTemplate,
     synthesisTemplate,
@@ -304,29 +314,52 @@ export class GenerationService {
         private statusBarItem: { setText(text: string): void }
     ) {}
 
-    async generate(folderPath: string): Promise<void> {
+    async generate(spec: CollectionSpec): Promise<void> {
         const providerCfg = this.settings[this.settings.provider];
         this.statusBarItem.setText('Generating self-test...');
         try {
-            const files = collectNoteFiles(this.app, folderPath);
+            let files: TFile[];
+            let outputPath: string;
+            let displayName: string;
+
+            switch (spec.mode) {
+                case 'folder':
+                    files = collectNoteFiles(this.app, spec.folderPath);
+                    outputPath = `${spec.folderPath}/_self-test.md`;
+                    displayName = spec.folderPath.split('/').pop() ?? spec.folderPath;
+                    break;
+                case 'tag':
+                    files = collectNotesByTag(this.app, spec.tag);
+                    outputPath = buildTagOutputPath(spec.tag);
+                    displayName = `tag #${spec.tag.replace(/^#/, '')}`;
+                    break;
+                case 'links':
+                    files = collectNotesByLinks(this.app, spec.rootFile, spec.depth);
+                    outputPath = buildLinksOutputPath(spec.rootFile);
+                    displayName = `links from ${spec.rootFile.basename}`;
+                    break;
+                case 'note':
+                    files = [spec.file];
+                    outputPath = buildNoteOutputPath(spec.file, this.settings.singleNoteOutputMode);
+                    displayName = spec.file.basename;
+                    break;
+            }
+
             if (files.length === 0) {
-                new Notice('No notes found in this folder.');
+                new Notice('No notes found for this selection.');
                 return;
             }
 
             const notes = await readNotes(this.app, files);
             const batches = splitIntoBatches(notes);
-            const folderName = folderPath.split('/').pop() ?? folderPath;
 
             let finalContent: string;
 
             if (batches.length === 1) {
-                // CTX-02: single call
                 const userMessage = buildBatchPrompt(batches[0]!, this.settings);
                 const messages = buildMessages(SYSTEM_MESSAGE, userMessage);
                 finalContent = await callLLM(this.settings.provider, providerCfg.apiKey, providerCfg.model, messages);
             } else {
-                // CTX-03: batch + synthesize
                 const partialOutputs: string[] = [];
                 for (let i = 0; i < batches.length; i++) {
                     this.statusBarItem.setText(`Generating self-test... (batch ${i + 1}/${batches.length})`);
@@ -342,12 +375,17 @@ export class GenerationService {
 
             finalContent = postProcessLLMOutput(finalContent);
 
-            // Prepend YAML frontmatter
-            const frontmatter = `---\nlast_review: null\nnext_review: null\nreview_count: 0\nreview_interval_days: 1\n---\n\n# Self-Test: ${folderName}\n\n`;
-            const output = frontmatter + finalContent;
+            // Build mode-aware frontmatter (D-14)
+            const frontmatter = buildFrontmatter(spec, files);
+            const title = `# Self-Test: ${displayName}`;
+            const output = frontmatter + title + '\n\n' + finalContent;
 
-            await writeOutput(this.app, folderPath, output);
-            new Notice(`Self-test written to ${folderName}/`);
+            if (spec.mode === 'folder') {
+                await writeOutput(this.app, spec.folderPath, output);
+            } else {
+                await writeOutputToPath(this.app, outputPath, output);
+            }
+            new Notice(`Self-test written for ${displayName}`);
         } catch (err) {
             console.error('[self-test] Generation error:', err);
             if (err instanceof LLMError) {

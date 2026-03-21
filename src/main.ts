@@ -46,7 +46,7 @@ export default class ActiveRecallPlugin extends Plugin {
                 buildContextMenuHandler((folderPath: string) => {
                     const sidebar = getSidebarView(this.app);
                     if (sidebar) return sidebar.generateForFolder(folderPath);
-                    return generationService.generate(folderPath).then(() => refreshSidebarIfOpen(this.app));
+                    return generationService.generate({ mode: 'folder', folderPath }).then(() => refreshSidebarIfOpen(this.app));
                 })
             )
         );
@@ -69,7 +69,7 @@ export default class ActiveRecallPlugin extends Plugin {
                 if (sidebar) {
                     await sidebar.generateForFolder(folderPath);
                 } else {
-                    await generationService.generate(folderPath);
+                    await generationService.generate({ mode: 'folder', folderPath });
                     refreshSidebarIfOpen(this.app);
                 }
             },

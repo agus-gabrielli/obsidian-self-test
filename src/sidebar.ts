@@ -197,7 +197,7 @@ export class ActiveRecallSidebarView extends ItemView {
     this.generatingFolders.add(folderPath);
     this.refresh();
     try {
-      await this.generationService.generate(folderPath);
+      await this.generationService.generate({ mode: 'folder', folderPath });
     } finally {
       this.generatingFolders.delete(folderPath);
       this.refresh();

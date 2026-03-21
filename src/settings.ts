@@ -47,6 +47,7 @@ export interface ActiveRecallSettings {
     generateReferenceAnswers: boolean;
     generateConceptMap: boolean;
     customInstructions: string;
+    singleNoteOutputMode: 'same-folder' | 'centralized';
 }
 
 export const DEFAULT_SETTINGS: ActiveRecallSettings = {
@@ -59,6 +60,7 @@ export const DEFAULT_SETTINGS: ActiveRecallSettings = {
     generateReferenceAnswers: true,
     generateConceptMap: true,
     customInstructions: '',
+    singleNoteOutputMode: 'same-folder',
 };
 
 /**
@@ -233,6 +235,19 @@ export class ActiveRecallSettingTab extends PluginSettingTab {
                     .setValue(this.plugin.settings.customInstructions);
                 text.inputEl.addEventListener('blur', async () => {
                     this.plugin.settings.customInstructions = text.getValue();
+                    await this.plugin.saveSettings();
+                });
+            });
+
+        new Setting(containerEl)
+            .setName('Single-note output location')
+            .setDesc('Where to save self-tests generated from a single note.')
+            .addDropdown(drop => {
+                drop.addOption('same-folder', 'Same folder as note');
+                drop.addOption('centralized', 'Centralized (_self-tests/notes/)');
+                drop.setValue(this.plugin.settings.singleNoteOutputMode);
+                drop.onChange(async (value) => {
+                    this.plugin.settings.singleNoteOutputMode = value as 'same-folder' | 'centralized';
                     await this.plugin.saveSettings();
                 });
             });
