@@ -26,7 +26,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 ## v2.0 Phases
 
 - [x] **Phase 7: Provider Settings and Migration** - Users can select and configure any of three LLM providers with per-provider API keys and model selection; existing OpenAI keys are migrated automatically (completed 2026-03-21)
-- [ ] **Phase 8: Multi-Provider LLM Dispatch** - Plugin successfully calls Gemini and Claude APIs in addition to OpenAI; provider-specific errors are surfaced with the provider name
+- [x] **Phase 8: Multi-Provider LLM Dispatch** - Plugin successfully calls Gemini and Claude APIs in addition to OpenAI; provider-specific errors are surfaced with the provider name (completed 2026-03-21)
 - [ ] **Phase 9: Flexible Note Collection** - Users can generate self-tests from notes by tag, by linked notes from a root note, or from a single note
 - [ ] **Phase 10: Sidebar Redesign** - Sidebar supports all four generation modes with clear navigation and shows tag/link-based self-tests alongside folder-based ones
 - [ ] **Phase 11: v2.0 Release** - README updated with multi-provider and collection mode documentation; plugin passes Obsidian store review and PR is submitted
