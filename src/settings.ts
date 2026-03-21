@@ -99,71 +99,78 @@ export class ActiveRecallSettingTab extends PluginSettingTab {
         const { containerEl } = this;
         containerEl.empty();
 
-        const providerCfg = PROVIDER_CONFIG[this.plugin.settings.provider];
-        const currentProviderSettings = this.plugin.settings[this.plugin.settings.provider];
-
         // Connection section
         new Setting(containerEl).setName('Connection').setHeading();
 
+        const activeProvider = this.plugin.settings.provider;
+        const meta = PROVIDER_CONFIG[activeProvider];
+        const providerSettings = this.plugin.settings[activeProvider];
+        const isCustomModel = !meta.models.includes(providerSettings.model);
+
+        // Provider dropdown - per PROV-01
         new Setting(containerEl)
             .setName('Provider')
-            .setDesc('Additional providers (Anthropic, custom endpoint) will be available in a future version.')
-            .addDropdown(drop => drop
-                .addOption('openai', 'OpenAI')
-                .setValue(this.plugin.settings.provider)
-            )
-            .setDisabled(true);
+            .setDesc('LLM provider for self-test generation.')
+            .addDropdown(drop => {
+                for (const [key, cfg] of Object.entries(PROVIDER_CONFIG)) {
+                    drop.addOption(key, cfg.label);
+                }
+                drop.setValue(activeProvider);
+                drop.onChange(async (value) => {
+                    this.plugin.settings.provider = value as LLMProvider;
+                    await this.plugin.saveSettings();
+                    this.display();
+                });
+            });
 
+        // API Key - per PROV-02, provider-specific placeholder
         new Setting(containerEl)
             .setName('API Key')
             .setDesc('Stored in data.json inside your vault. Do not commit this file to a public git repository.')
             .addText(text => {
                 text.inputEl.type = 'password';
                 text
-                    .setPlaceholder(providerCfg.placeholder)
-                    .setValue(currentProviderSettings.apiKey)
+                    .setPlaceholder(meta.placeholder)
+                    .setValue(providerSettings.apiKey)
                     .onChange(async (value) => {
-                        this.plugin.settings[this.plugin.settings.provider].apiKey = value;
+                        this.plugin.settings[activeProvider].apiKey = value;
                         await this.plugin.saveSettings();
                     });
             });
 
-        // Custom = any model not in the curated list (including empty string)
-        const isCustomModel = !providerCfg.models.includes(currentProviderSettings.model);
-
+        // Model dropdown - per PROV-03, provider-specific curated list
         new Setting(containerEl)
             .setName('Model')
-            .setDesc(providerCfg.modelDesc)
+            .setDesc(meta.modelDesc)
             .addDropdown(drop => {
-                for (const m of providerCfg.models) {
+                for (const m of meta.models) {
                     drop.addOption(m, m);
                 }
                 drop.addOption(CUSTOM_MODEL_VALUE, 'Custom model...');
-                drop.setValue(isCustomModel ? CUSTOM_MODEL_VALUE : currentProviderSettings.model);
+                drop.setValue(isCustomModel ? CUSTOM_MODEL_VALUE : providerSettings.model);
                 drop.onChange(async (value) => {
                     if (value === CUSTOM_MODEL_VALUE) {
-                        // Clear model so custom input appears and persists across reopens
-                        this.plugin.settings[this.plugin.settings.provider].model = '';
+                        this.plugin.settings[activeProvider].model = '';
                         await this.plugin.saveSettings();
                         this.display();
                         return;
                     }
-                    this.plugin.settings[this.plugin.settings.provider].model = value;
+                    this.plugin.settings[activeProvider].model = value;
                     await this.plugin.saveSettings();
                     this.display();
                 });
             });
 
-        // Show custom model text input when a non-curated model is set
+        // Custom model text input when non-curated model is set
         if (isCustomModel) {
             new Setting(containerEl)
                 .setName('Custom model name')
-                .setDesc(`Enter the exact ${providerCfg.label} model identifier.`)
+                .setDesc(`Enter the exact ${meta.label} model identifier.`)
                 .addText(text => text
-                    .setPlaceholder(`e.g. ${providerCfg.defaultModel}`)
-                    .setValue(currentProviderSettings.model)
+                    .setPlaceholder(`e.g. ${meta.defaultModel}`)
+                    .setValue(providerSettings.model)
                     .onChange(async (value) => {
-                        this.plugin.settings[this.plugin.settings.provider].model = value;
+                        this.plugin.settings[activeProvider].model = value;
                         await this.plugin.saveSettings();
                     })
                 );
