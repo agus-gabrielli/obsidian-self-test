@@ -35,8 +35,8 @@ Users can generate a structured self-test from any folder of notes in one click,
 
 ### Active
 
-- [ ] Gemini provider via Google AI Studio API
-- [ ] Claude provider via native Anthropic Messages API
+- [x] Gemini provider via Google AI Studio API (Phase 8)
+- [x] Claude provider via native Anthropic Messages API (Phase 8)
 - [x] Provider selection in settings with per-provider API key and model configuration (Phase 7)
 - [ ] Generation by tag - collect notes by tag, output to _self-tests/ folder
 - [ ] Generation by linked notes from root/MOC note (depth 1, optional depth 2)
@@ -79,4 +79,4 @@ Users can generate a structured self-test from any folder of notes in one click,
 | Standard `.md` output only | Full portability; no lock-in to plugin-specific rendering | — Pending |
 
 ---
-*Last updated: 2026-03-21 after Phase 7 completion (provider settings and migration)*
+*Last updated: 2026-03-21 after Phase 8 completion (multi-provider LLM dispatch)*
