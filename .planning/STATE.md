@@ -1,16 +1,17 @@
 ---
 gsd_state_version: 1.0
-milestone: v2.0
-milestone_name: multi-provider-and-flexible-collection
-current_phase: 7
-current_plan: —
-status: roadmap complete - ready for phase 7 planning
-last_updated: "2026-03-21"
+milestone: v1.0
+milestone_name: Phases
+current_phase: 07
+current_plan: 1
+status: executing
+last_updated: "2026-03-21T19:31:10.808Z"
+last_activity: 2026-03-21
 progress:
-  total_phases: 5
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_phases: 7
+  completed_phases: 6
+  total_plans: 17
+  completed_plans: 16
 ---
 
 # Session State
@@ -19,16 +20,16 @@ progress:
 
 See: .planning/PROJECT.md (updated 2026-03-21)
 **Core value:** Users can generate a structured self-test from any folder of notes in one click, turning passive note review into active recall practice.
-**Current focus:** v2.0 - Multi-provider LLM support (Gemini, Claude) and flexible note collection (by tag, by linked notes, single note)
+**Current focus:** Phase 07 — final-release-recreate-the-1-0-0-github-release-with-updated-assets-then-open-the-store-submission-pr-essentially-absorbs-05-03-task-3-a-fresh-build
 
 ## Position
 
 **Milestone:** v2.0 Multi-Provider & Flexible Collection
-**Current phase:** 7 (Provider Settings and Migration) - not started
-**Current plan:** -
-**Status:** Roadmap complete; ready to plan Phase 7
+**Current phase:** 07
+**Current plan:** 1
+**Status:** Executing Phase 07
 **Progress bar:** [----------] 0/5 v2.0 phases complete
-**Last activity:** 2026-03-21 - v2.0 roadmap created (phases 7-11)
+**Last activity:** 2026-03-21
 
 ## v2.0 Phase Summary
 
@@ -39,6 +40,12 @@ See: .planning/PROJECT.md (updated 2026-03-21)
 | 9 - Flexible Note Collection | Generate self-tests from notes by tag, by linked notes, or single note | COL-01 through COL-07 |
 | 10 - Sidebar Redesign | Sidebar supports all four modes with clear navigation | UI-03, UI-04 |
 | 11 - v2.0 Release | README updated; store submission PR open | DIST-03, DIST-04 |
+
+## Key Architecture Decisions (from Phase 07-01 execution)
+
+- 2026-03-21 (07-01): Nested per-provider settings shape (openai/gemini/anthropic sub-objects) is canonical - generation.ts reads settings[settings.provider].apiKey/.model
+- 2026-03-21 (07-01): migrateV1Settings deletes flat fields unconditionally after migration so they never re-persist to data.json
+- 2026-03-21 (07-01): PluginSettingTab and Setting added to obsidian mock to unblock settings.test.ts
 
 ## Key Architecture Decisions (from research)
 
@@ -110,6 +117,7 @@ See: .planning/PROJECT.md (updated 2026-03-21)
 - 2026-03-18: Executed 06-04 (build verification + human verify) - 59 tests pass, user approved all 17 checks, 4 post-checkpoint bug fixes (f338b83, f30261f, 5427c75, 580e7c1)
 - 2026-03-18: Stopped at - Completed 06-04-PLAN.md (Phase 06 complete)
 - 2026-03-21: v2.0 roadmap created - 5 phases (7-11), all 17 requirements mapped
+- 2026-03-21: Executed 07-01 (provider settings and migration) - 2 tasks, 2 commits (2dd1085, 13fedbb) - 69 tests pass, zero TS errors, prod build clean
 
 ## Accumulated Context
 

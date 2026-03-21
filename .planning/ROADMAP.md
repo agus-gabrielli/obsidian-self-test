@@ -140,7 +140,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 07-01-PLAN.md - Settings interface refactor, PROVIDER_CONFIG, migration helper with tests, generation.ts call site updates (Wave 1)
+- [x] 07-01-PLAN.md - Settings interface refactor, PROVIDER_CONFIG, migration helper with tests, generation.ts call site updates (Wave 1)
 - [ ] 07-02-PLAN.md - Rewrite display() for provider-scoped rendering, human-verify in Obsidian (Wave 2)
 
 ### Phase 8: Multi-Provider LLM Dispatch
@@ -203,7 +203,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 4. Commands and Sidebar | 3/3 | Complete | 2026-03-12 |
 | 5. Polish and Release | 3/3 | Complete | 2026-03-17 |
 | 6. Refinements | 4/4 | Complete | 2026-03-19 |
-| 7. Provider Settings and Migration | 0/2 | Not started | - |
+| 7. Provider Settings and Migration | 1/2 | In Progress|  |
 | 8. Multi-Provider LLM Dispatch | 0/TBD | Not started | - |
 | 9. Flexible Note Collection | 0/TBD | Not started | - |
 | 10. Sidebar Redesign | 0/TBD | Not started | - |

@@ -57,13 +57,13 @@
 
 ### Providers
 
-- [ ] **PROV-01**: User can select LLM provider (OpenAI, Gemini, Claude) from a dropdown in settings
-- [ ] **PROV-02**: User can configure a separate API key for each provider (keys persist independently)
-- [ ] **PROV-03**: User can select from a curated model list per provider (with custom model option)
+- [x] **PROV-01**: User can select LLM provider (OpenAI, Gemini, Claude) from a dropdown in settings
+- [x] **PROV-02**: User can configure a separate API key for each provider (keys persist independently)
+- [x] **PROV-03**: User can select from a curated model list per provider (with custom model option)
 - [ ] **PROV-04**: Plugin calls Gemini via Google AI Studio API (generativelanguage.googleapis.com) using requestUrl()
 - [ ] **PROV-05**: Plugin calls Claude via native Anthropic Messages API (api.anthropic.com) using requestUrl()
 - [ ] **PROV-06**: Error messages reference the active provider by name (e.g. "Gemini API key invalid")
-- [ ] **PROV-07**: Existing v1.0 users' OpenAI API key and model are migrated automatically on first v2.0 load
+- [x] **PROV-07**: Existing v1.0 users' OpenAI API key and model are migrated automatically on first v2.0 load
 
 ### Collection Modes
 
@@ -143,13 +143,13 @@
 | FB-02 | Phase 3 | Complete |
 | DIST-01 | Phase 1 | Complete |
 | DIST-02 | Phase 5 | Complete |
-| PROV-01 | Phase 7 | Pending |
-| PROV-02 | Phase 7 | Pending |
-| PROV-03 | Phase 7 | Pending |
+| PROV-01 | Phase 7 | Complete |
+| PROV-02 | Phase 7 | Complete |
+| PROV-03 | Phase 7 | Complete |
 | PROV-04 | Phase 8 | Pending |
 | PROV-05 | Phase 8 | Pending |
 | PROV-06 | Phase 8 | Pending |
-| PROV-07 | Phase 7 | Pending |
+| PROV-07 | Phase 7 | Complete |
 | COL-01 | Phase 9 | Pending |
 | COL-02 | Phase 9 | Pending |
 | COL-03 | Phase 9 | Pending |
