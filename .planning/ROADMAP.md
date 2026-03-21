@@ -171,7 +171,7 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 09-01-PLAN.md - TDD: Collector functions, output path builders, writeOutputToPath, obsidian mock extensions (Wave 1)
+- [x] 09-01-PLAN.md - TDD: Collector functions, output path builders, writeOutputToPath, obsidian mock extensions (Wave 1)
 - [ ] 09-02-PLAN.md - Refactor GenerationService.generate() to CollectionSpec, create TagPickerModal and LinkedNotesPickerModal (Wave 2)
 - [ ] 09-03-PLAN.md - Wire commands, file context menu, vault listeners into main.ts; human-verify in Obsidian (Wave 3)
 
@@ -214,6 +214,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 6. Refinements | 4/4 | Complete | 2026-03-19 |
 | 7. Provider Settings and Migration | 2/2 | Complete   | 2026-03-21 |
 | 8. Multi-Provider LLM Dispatch | 2/2 | Complete | 2026-03-21 |
-| 9. Flexible Note Collection | 0/3 | Not started | - |
+| 9. Flexible Note Collection | 1/3 | In Progress|  |
 | 10. Sidebar Redesign | 0/TBD | Not started | - |
 | 11. v2.0 Release | 0/TBD | Not started | - |

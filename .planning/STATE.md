@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Phases
-current_phase: 08
-current_plan: Not started
-status: completed
-last_updated: "2026-03-21T22:02:59.501Z"
+current_phase: 09
+current_plan: 2
+status: executing
+last_updated: "2026-03-21T23:51:50.328Z"
 last_activity: 2026-03-21
 progress:
-  total_phases: 8
+  total_phases: 9
   completed_phases: 8
-  total_plans: 19
-  completed_plans: 19
+  total_plans: 22
+  completed_plans: 20
 ---
 
 # Session State
@@ -20,15 +20,15 @@ progress:
 
 See: .planning/PROJECT.md (updated 2026-03-21)
 **Core value:** Users can generate a structured self-test from any folder of notes in one click, turning passive note review into active recall practice.
-**Current focus:** Phase 08 — multi-provider-llm-dispatch
+**Current focus:** Phase 09 — flexible-note-collection
 
 ## Position
 
 **Milestone:** v2.0 Multi-Provider & Flexible Collection
-**Current phase:** 08
-**Current plan:** Not started
-**Status:** Milestone complete
-**Progress bar:** [----------] 0/5 v2.0 phases complete
+**Current phase:** 09
+**Current plan:** 2
+**Status:** Executing Phase 09 (Plan 02)
+**Progress bar:** [█████████░] 91% (20/22 plans complete)
 **Last activity:** 2026-03-21
 
 ## v2.0 Phase Summary
@@ -40,6 +40,13 @@ See: .planning/PROJECT.md (updated 2026-03-21)
 | 9 - Flexible Note Collection | Generate self-tests from notes by tag, by linked notes, or single note | COL-01 through COL-07 |
 | 10 - Sidebar Redesign | Sidebar supports all four modes with clear navigation | UI-03, UI-04 |
 | 11 - v2.0 Release | README updated; store submission PR open | DIST-03, DIST-04 |
+
+## Key Architecture Decisions (from Phase 09-01 execution)
+
+- 2026-03-21 (09-01): CollectionSpec uses discriminated union (folder/tag/links/note) - exhaustive switch in buildFrontmatter enforces all modes are handled at compile time
+- 2026-03-21 (09-01): isSelfTestFile checks three patterns: basename === '_self-test', path.startsWith('_self-tests/'), basename.endsWith('_self-test') - covers all output path conventions
+- 2026-03-21 (09-01): getAllTags null-guard required (cache ? getAllTags(cache) : []) because real obsidian type signature requires non-null CachedMetadata
+- 2026-03-21 (09-01): Mock TFile cast with 'as any' at collector call sites in tests - same pattern as 'app as any' used throughout codebase
 
 ## Key Architecture Decisions (from Phase 08-01 execution)
 
@@ -132,6 +139,7 @@ See: .planning/PROJECT.md (updated 2026-03-21)
 - 2026-03-21: Stopped at - Completed 07-02-PLAN.md
 - 2026-03-21: Executed 08-01 (multi-provider LLM adapters) - 2 TDD tasks, 2 commits (631a142 RED, 5962e97 GREEN) - 84 tests pass, 0 TS errors
 - 2026-03-21: Stopped at - Completed 08-01-PLAN.md
+- 2026-03-21: Executed 09-01 (collector pure functions) - 2 TDD tasks, 2 commits (3e665d4 RED, 32011d9 GREEN) - 121 tests pass, 0 TS errors
 
 ## Accumulated Context
 
