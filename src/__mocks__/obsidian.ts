@@ -8,6 +8,7 @@ export class TFile {
   extension: string;
   path: string;
   stat = { mtime: Date.now() };
+  parent: { path: string } | null;
 
   constructor(path: string, extension = 'md') {
     this.path = path;
@@ -17,6 +18,8 @@ export class TFile {
     this.basename = filename.endsWith(`.${extension}`)
       ? filename.slice(0, -(extension.length + 1))
       : filename;
+    const dirParts = parts.slice(0, -1);
+    this.parent = dirParts.length > 0 ? { path: dirParts.join('/') } : null;
   }
 }
 
@@ -48,6 +51,13 @@ export const requestUrl = jest.fn().mockResolvedValue({
     ],
   },
 });
+
+export const getAllTags = jest.fn().mockReturnValue([]);
+
+export interface CachedMetadata {
+  tags?: Array<{ tag: string }>;
+  frontmatter?: Record<string, unknown>;
+}
 
 export class WorkspaceLeaf {
   view: unknown = null;
@@ -82,11 +92,18 @@ export interface App {
     create(path: string, content: string): Promise<TFile>;
     modify(file: TFile, content: string): Promise<void>;
     getAllFolders(includeRoot?: boolean): TFolder[];
+    getFiles(): TFile[];
+    getFileByPath(path: string): TFile | null;
+    createFolder(path: string): Promise<void>;
   };
   workspace: {
     getLeavesOfType(type: string): WorkspaceLeaf[];
     getRightLeaf(split: boolean): WorkspaceLeaf;
     revealLeaf(leaf: WorkspaceLeaf): void;
+  };
+  metadataCache: {
+    getFileCache(file: TFile): CachedMetadata | null;
+    resolvedLinks: Record<string, Record<string, number>>;
   };
 }
 
@@ -105,11 +122,18 @@ export function createMockApp() {
       }),
       modify: jest.fn().mockResolvedValue(undefined),
       getAllFolders: jest.fn().mockReturnValue([]),
+      getFiles: jest.fn().mockReturnValue([]),
+      getFileByPath: jest.fn().mockReturnValue(null),
+      createFolder: jest.fn().mockResolvedValue(undefined),
     },
     workspace: {
       getLeavesOfType: jest.fn().mockReturnValue([]),
       getRightLeaf: jest.fn(),
       revealLeaf: jest.fn().mockResolvedValue(undefined),
+    },
+    metadataCache: {
+      getFileCache: jest.fn().mockReturnValue(null),
+      resolvedLinks: {} as Record<string, Record<string, number>>,
     },
   };
 }
@@ -169,6 +193,28 @@ export class ItemView {
     this.contentEl = makeMockEl();
     this.app = createMockApp();
   }
+}
+
+export class SuggestModal<T> {
+  app: unknown;
+  constructor(app: unknown) { this.app = app; }
+  setPlaceholder(_text: string): void {}
+  close(): void {}
+  getSuggestions(_query: string): T[] { return []; }
+  renderSuggestion(_item: T, _el: HTMLElement): void {}
+  onChooseSuggestion(_item: T, _evt: MouseEvent | KeyboardEvent): void {}
+  open(): void {}
+}
+
+export class Modal {
+  app: unknown;
+  contentEl: ReturnType<typeof makeMockEl>;
+  constructor(app: unknown) {
+    this.app = app;
+    this.contentEl = makeMockEl();
+  }
+  open(): void {}
+  close(): void {}
 }
 
 /**
