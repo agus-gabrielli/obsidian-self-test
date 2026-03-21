@@ -25,7 +25,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 ## v2.0 Phases
 
-- [ ] **Phase 7: Provider Settings and Migration** - Users can select and configure any of three LLM providers with per-provider API keys and model selection; existing OpenAI keys are migrated automatically
+- [x] **Phase 7: Provider Settings and Migration** - Users can select and configure any of three LLM providers with per-provider API keys and model selection; existing OpenAI keys are migrated automatically (completed 2026-03-21)
 - [ ] **Phase 8: Multi-Provider LLM Dispatch** - Plugin successfully calls Gemini and Claude APIs in addition to OpenAI; provider-specific errors are surfaced with the provider name
 - [ ] **Phase 9: Flexible Note Collection** - Users can generate self-tests from notes by tag, by linked notes from a root note, or from a single note
 - [ ] **Phase 10: Sidebar Redesign** - Sidebar supports all four generation modes with clear navigation and shows tag/link-based self-tests alongside folder-based ones
@@ -141,7 +141,7 @@ Plans:
 
 Plans:
 - [x] 07-01-PLAN.md - Settings interface refactor, PROVIDER_CONFIG, migration helper with tests, generation.ts call site updates (Wave 1)
-- [ ] 07-02-PLAN.md - Rewrite display() for provider-scoped rendering, human-verify in Obsidian (Wave 2)
+- [x] 07-02-PLAN.md - Rewrite display() for provider-scoped rendering, human-verify in Obsidian (Wave 2)
 
 ### Phase 8: Multi-Provider LLM Dispatch
 **Goal**: The plugin routes generation calls to the correct provider API (OpenAI, Gemini, or Claude) based on the active settings selection, with provider-specific error messages when calls fail
@@ -203,7 +203,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 4. Commands and Sidebar | 3/3 | Complete | 2026-03-12 |
 | 5. Polish and Release | 3/3 | Complete | 2026-03-17 |
 | 6. Refinements | 4/4 | Complete | 2026-03-19 |
-| 7. Provider Settings and Migration | 1/2 | In Progress|  |
+| 7. Provider Settings and Migration | 2/2 | Complete   | 2026-03-21 |
 | 8. Multi-Provider LLM Dispatch | 0/TBD | Not started | - |
 | 9. Flexible Note Collection | 0/TBD | Not started | - |
 | 10. Sidebar Redesign | 0/TBD | Not started | - |

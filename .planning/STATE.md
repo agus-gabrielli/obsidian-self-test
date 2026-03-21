@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Phases
 current_phase: 07
-current_plan: 1
+current_plan: 2
 status: executing
-last_updated: "2026-03-21T19:31:10.808Z"
+last_updated: "2026-03-21T19:44:18.895Z"
 last_activity: 2026-03-21
 progress:
   total_phases: 7
-  completed_phases: 6
+  completed_phases: 7
   total_plans: 17
-  completed_plans: 16
+  completed_plans: 17
 ---
 
 # Session State
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Milestone:** v2.0 Multi-Provider & Flexible Collection
 **Current phase:** 07
-**Current plan:** 1
+**Current plan:** 2
 **Status:** Executing Phase 07
 **Progress bar:** [----------] 0/5 v2.0 phases complete
 **Last activity:** 2026-03-21
@@ -46,6 +46,9 @@ See: .planning/PROJECT.md (updated 2026-03-21)
 - 2026-03-21 (07-01): Nested per-provider settings shape (openai/gemini/anthropic sub-objects) is canonical - generation.ts reads settings[settings.provider].apiKey/.model
 - 2026-03-21 (07-01): migrateV1Settings deletes flat fields unconditionally after migration so they never re-persist to data.json
 - 2026-03-21 (07-01): PluginSettingTab and Setting added to obsidian mock to unblock settings.test.ts
+- 2026-03-21 (07-02): Provider dropdown onChange saves settings.provider before calling this.display() so re-render reads the new provider
+- 2026-03-21 (07-02): isCustomModel check uses !meta.models.includes(providerSettings.model) - stored value is always the real model string, never the __custom__ sentinel
+- 2026-03-21 (07-02): Custom model dropdown onChange sets model to '' when __custom__ selected so text input starts empty
 
 ## Key Architecture Decisions (from research)
 
@@ -118,6 +121,8 @@ See: .planning/PROJECT.md (updated 2026-03-21)
 - 2026-03-18: Stopped at - Completed 06-04-PLAN.md (Phase 06 complete)
 - 2026-03-21: v2.0 roadmap created - 5 phases (7-11), all 17 requirements mapped
 - 2026-03-21: Executed 07-01 (provider settings and migration) - 2 tasks, 2 commits (2dd1085, 13fedbb) - 69 tests pass, zero TS errors, prod build clean
+- 2026-03-21: Executed 07-02 (provider-scoped settings UI) - 1 auto task + 1 human-verify, 1 commit (8288b04) - user approved all 10 checks in Obsidian
+- 2026-03-21: Stopped at - Completed 07-02-PLAN.md
 
 ## Accumulated Context
 
