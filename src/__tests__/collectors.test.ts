@@ -207,7 +207,7 @@ describe('collectNotesByLinks', () => {
       return null;
     });
 
-    const result = collectNotesByLinks(app as any, rootFile, 1);
+    const result = collectNotesByLinks(app as any, rootFile as any, 1);
     expect(result).toHaveLength(3);
     expect(result).toContain(rootFile);
     expect(result).toContain(fileA);
@@ -232,7 +232,7 @@ describe('collectNotesByLinks', () => {
       return null;
     });
 
-    const result = collectNotesByLinks(app as any, rootFile, 2);
+    const result = collectNotesByLinks(app as any, rootFile as any, 2);
     expect(result).toHaveLength(4);
     expect(result).toContain(rootFile);
     expect(result).toContain(fileA);
@@ -255,7 +255,7 @@ describe('collectNotesByLinks', () => {
       return null;
     });
 
-    const result = collectNotesByLinks(app as any, rootFile, 2);
+    const result = collectNotesByLinks(app as any, rootFile as any, 2);
     expect(result).toHaveLength(2);
     expect(result).toContain(rootFile);
     expect(result).toContain(fileA);
@@ -274,7 +274,7 @@ describe('collectNotesByLinks', () => {
       return null;
     });
 
-    const result = collectNotesByLinks(app as any, rootFile, 1);
+    const result = collectNotesByLinks(app as any, rootFile as any, 1);
     expect(result).toHaveLength(1);
     expect(result).toContain(rootFile);
     expect(result).not.toContain(image);
@@ -293,7 +293,7 @@ describe('collectNotesByLinks', () => {
       return null;
     });
 
-    const result = collectNotesByLinks(app as any, rootFile, 1);
+    const result = collectNotesByLinks(app as any, rootFile as any, 1);
     expect(result).toHaveLength(1);
     expect(result).toContain(rootFile);
     expect(result).not.toContain(selfTestFile);
@@ -317,24 +317,24 @@ describe('buildTagOutputPath', () => {
 describe('buildLinksOutputPath', () => {
   test('returns _self-tests/links/<basename>.md', () => {
     const rootFile = new TFile('notes/my-moc.md');
-    expect(buildLinksOutputPath(rootFile)).toBe('_self-tests/links/my-moc.md');
+    expect(buildLinksOutputPath(rootFile as any)).toBe('_self-tests/links/my-moc.md');
   });
 });
 
 describe('buildNoteOutputPath', () => {
   test('same-folder mode returns note in same folder', () => {
     const file = new TFile('physics/newton.md');
-    expect(buildNoteOutputPath(file, 'same-folder')).toBe('physics/newton_self-test.md');
+    expect(buildNoteOutputPath(file as any, 'same-folder')).toBe('physics/newton_self-test.md');
   });
 
   test('same-folder root level (parent null) returns at root', () => {
     const file = new TFile('newton.md');
-    expect(buildNoteOutputPath(file, 'same-folder')).toBe('newton_self-test.md');
+    expect(buildNoteOutputPath(file as any, 'same-folder')).toBe('newton_self-test.md');
   });
 
   test('centralized mode returns _self-tests/notes/<safe-name>.md', () => {
     const file = new TFile('physics/mechanics/newton.md');
-    expect(buildNoteOutputPath(file, 'centralized')).toBe('_self-tests/notes/physics-mechanics-newton.md');
+    expect(buildNoteOutputPath(file as any, 'centralized')).toBe('_self-tests/notes/physics-mechanics-newton.md');
   });
 });
 
@@ -402,19 +402,19 @@ describe('writeOutputToPath', () => {
 
 describe('isSelfTestFile', () => {
   test('returns true for _self-test basename', () => {
-    expect(isSelfTestFile(new TFile('folder/_self-test.md'))).toBe(true);
+    expect(isSelfTestFile(new TFile('folder/_self-test.md') as any)).toBe(true);
   });
 
   test('returns true for files inside _self-tests/', () => {
-    expect(isSelfTestFile(new TFile('_self-tests/tags/python.md'))).toBe(true);
+    expect(isSelfTestFile(new TFile('_self-tests/tags/python.md') as any)).toBe(true);
   });
 
   test('returns false for regular note', () => {
-    expect(isSelfTestFile(new TFile('folder/notes.md'))).toBe(false);
+    expect(isSelfTestFile(new TFile('folder/notes.md') as any)).toBe(false);
   });
 
   test('returns true for single-note self-test', () => {
-    expect(isSelfTestFile(new TFile('folder/newton_self-test.md'))).toBe(true);
+    expect(isSelfTestFile(new TFile('folder/newton_self-test.md') as any)).toBe(true);
   });
 });
 
@@ -425,7 +425,7 @@ describe('isSelfTestFile', () => {
 describe('buildFrontmatter', () => {
   test('tag mode includes source_mode, source, source_notes', () => {
     const spec: CollectionSpec = { mode: 'tag', tag: 'python' };
-    const files = [new TFile('notes/note1.md'), new TFile('notes/note2.md')];
+    const files = [new TFile('notes/note1.md') as any, new TFile('notes/note2.md') as any];
 
     const result = buildFrontmatter(spec, files);
     expect(result).toContain('source_mode: tag');
@@ -435,7 +435,7 @@ describe('buildFrontmatter', () => {
   });
 
   test('links mode uses root basename as source', () => {
-    const rootFile = new TFile('notes/my-moc.md');
+    const rootFile = new TFile('notes/my-moc.md') as any;
     const spec: CollectionSpec = { mode: 'links', rootFile, depth: 1 };
     const files = [rootFile];
 
@@ -446,7 +446,7 @@ describe('buildFrontmatter', () => {
 
   test('folder mode uses folder path as source', () => {
     const spec: CollectionSpec = { mode: 'folder', folderPath: 'my/folder' };
-    const files: TFile[] = [];
+    const files: any[] = [];
 
     const result = buildFrontmatter(spec, files);
     expect(result).toContain('source_mode: folder');
