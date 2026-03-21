@@ -33,13 +33,9 @@ export class TFolder {
 // Type alias for abstract file union - used by context menu handlers
 export type TAbstractFile = TFile | TFolder;
 
-export class Notice {
-  message: string;
-
-  constructor(message: string) {
-    this.message = message;
-  }
-}
+export const Notice = jest.fn().mockImplementation(function (this: { message: string }, message: string) {
+  this.message = message;
+});
 
 export const requestUrl = jest.fn().mockResolvedValue({
   status: 200,

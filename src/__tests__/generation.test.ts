@@ -6,10 +6,13 @@ import {
   estimateTokens,
   INPUT_BUDGET_CHARS,
   classifyError,
+  callLLM,
+  LLMError,
 } from '../generation';
 import {
   TFile,
   TFolder,
+  Notice,
   requestUrl,
   createMockApp,
   createMockStatusBarItem,
@@ -217,7 +220,7 @@ describe('GenerationService', () => {
     test('maps status 401 to plain-language error; does not expose raw API error string', () => {
       // Test classifyError directly - this is the authoritative error mapping function
       const userFacingMsg = classifyError(401);
-      expect(userFacingMsg).toBe('Invalid API key. Check your key in Settings.');
+      expect(userFacingMsg).toBe('OpenAI API key invalid. Check your key in Settings.');
       expect(userFacingMsg).not.toContain('sk-');
 
       // 429 must use exact wording without "Please"
@@ -238,4 +241,234 @@ describe('GenerationService', () => {
     });
   });
 
+});
+
+// Helper messages for assertions
+const messages = [
+  { role: 'system' as const, content: 'You are a helpful assistant.' },
+  { role: 'user' as const, content: 'Generate questions about photosynthesis.' },
+];
+
+describe('PROV-06: classifyError with provider', () => {
+  test('classifyError(401, undefined, "Gemini") returns Gemini-branded message', () => {
+    expect(classifyError(401, undefined, 'Gemini')).toBe('Gemini API key invalid. Check your key in Settings.');
+  });
+
+  test('classifyError(500, undefined, "Claude (Anthropic)") returns Anthropic-branded message', () => {
+    expect(classifyError(500, undefined, 'Claude (Anthropic)')).toBe('Claude (Anthropic) service error. Please try again later.');
+  });
+
+  test('classifyError(429, undefined, "Gemini") returns rate limit message without provider name', () => {
+    expect(classifyError(429, undefined, 'Gemini')).toBe('Rate limit reached. Wait a moment, then try again.');
+  });
+
+  test('classifyError(400, contextLengthError, "Gemini") returns folder-too-large message', () => {
+    const apiError = { error: { code: 'context_length_exceeded' } };
+    expect(classifyError(400, apiError, 'Gemini')).toBe('Folder is too large to process. Try removing some notes or reducing note length.');
+  });
+
+  test('classifyError(401) with no provider returns OpenAI default message', () => {
+    expect(classifyError(401)).toBe('OpenAI API key invalid. Check your key in Settings.');
+  });
+});
+
+describe('PROV-04: Gemini adapter', () => {
+  test('happy path: returns text from candidates[0].content.parts[0].text', async () => {
+    (requestUrl as jest.Mock).mockResolvedValueOnce({
+      status: 200,
+      json: {
+        candidates: [{
+          content: { parts: [{ text: 'Gemini output' }] },
+          finishReason: 'STOP',
+        }],
+      },
+    });
+
+    const result = await callLLM('gemini', 'AIza-test', 'gemini-2.5-flash', messages);
+    expect(result).toBe('Gemini output');
+
+    const call = (requestUrl as jest.Mock).mock.calls[0][0] as { url: string; body: string; headers: Record<string, string> };
+    expect(call.url).toContain('generativelanguage.googleapis.com');
+    expect(call.url).toContain('key=AIza-test');
+
+    const body = JSON.parse(call.body) as {
+      system_instruction: { parts: [{ text: string }] };
+      contents: Array<{ role: string; parts: [{ text: string }] }>;
+      generationConfig: { maxOutputTokens: number };
+    };
+    expect(body.system_instruction.parts[0].text).toBe('You are a helpful assistant.');
+    expect(body.contents[0].role).toBe('user');
+    expect(body.generationConfig.maxOutputTokens).toBe(8192);
+  });
+
+  test('safety block: throws when candidates array is empty and shows Notice', async () => {
+    (requestUrl as jest.Mock).mockResolvedValueOnce({
+      status: 200,
+      json: { candidates: [] },
+    });
+
+    await expect(callLLM('gemini', 'AIza-test', 'gemini-2.5-flash', messages))
+      .rejects.toThrow('safety block');
+
+    const noticeCalls = (Notice as jest.Mock).mock.calls.map((c: [string]) => c[0]);
+    expect(noticeCalls.some((msg: string) => msg.includes('safety filters'))).toBe(true);
+  });
+
+  test('truncation with content: returns partial text and shows truncation Notice', async () => {
+    (requestUrl as jest.Mock).mockResolvedValueOnce({
+      status: 200,
+      json: {
+        candidates: [{
+          content: { parts: [{ text: 'partial' }] },
+          finishReason: 'MAX_TOKENS',
+        }],
+      },
+    });
+
+    const result = await callLLM('gemini', 'AIza-test', 'gemini-2.5-flash', messages);
+    expect(result).toBe('partial');
+
+    const noticeCalls = (Notice as jest.Mock).mock.calls.map((c: [string]) => c[0]);
+    expect(noticeCalls).toContain('Warning: response may be truncated due to token limit.');
+  });
+
+  test('truncation without content (Gemini 2.5 bug): throws Empty response from LLM', async () => {
+    (requestUrl as jest.Mock).mockResolvedValueOnce({
+      status: 200,
+      json: {
+        candidates: [{
+          content: { parts: [{ text: '' }] },
+          finishReason: 'MAX_TOKENS',
+        }],
+      },
+    });
+
+    await expect(callLLM('gemini', 'AIza-test', 'gemini-2.5-flash', messages))
+      .rejects.toThrow('Empty response from LLM');
+  });
+
+  test('API error: throws LLMError with correct status on non-200 response', async () => {
+    (requestUrl as jest.Mock).mockResolvedValueOnce({
+      status: 401,
+      json: { error: { message: 'bad key' } },
+    });
+
+    await expect(callLLM('gemini', 'AIza-test', 'gemini-2.5-flash', messages))
+      .rejects.toBeInstanceOf(LLMError);
+
+    try {
+      await callLLM('gemini', 'AIza-test', 'gemini-2.5-flash', messages);
+    } catch (e) {
+      // second call needs a mock too
+    }
+  });
+});
+
+describe('PROV-05: Anthropic adapter', () => {
+  test('happy path: returns text from content[0].text with correct headers and body', async () => {
+    (requestUrl as jest.Mock).mockResolvedValueOnce({
+      status: 200,
+      json: {
+        content: [{ text: 'Claude output' }],
+        stop_reason: 'end_turn',
+      },
+    });
+
+    const result = await callLLM('anthropic', 'sk-ant-test', 'claude-sonnet-4-6', messages);
+    expect(result).toBe('Claude output');
+
+    const call = (requestUrl as jest.Mock).mock.calls[0][0] as {
+      url: string;
+      headers: Record<string, string>;
+      body: string;
+    };
+    expect(call.url).toBe('https://api.anthropic.com/v1/messages');
+    expect(call.headers['x-api-key']).toBe('sk-ant-test');
+    expect(call.headers['anthropic-version']).toBe('2023-06-01');
+
+    const body = JSON.parse(call.body) as {
+      system: string;
+      max_tokens: number;
+      model: string;
+      messages: Array<{ role: string }>;
+    };
+    expect(body.system).toBe('You are a helpful assistant.');
+    expect(body.max_tokens).toBe(8192);
+    expect(body.model).toBe('claude-sonnet-4-6');
+    expect(body.messages.every((m: { role: string }) => m.role !== 'system')).toBe(true);
+  });
+
+  test('truncation: returns partial and shows truncation Notice on stop_reason max_tokens', async () => {
+    (requestUrl as jest.Mock).mockResolvedValueOnce({
+      status: 200,
+      json: {
+        content: [{ text: 'partial' }],
+        stop_reason: 'max_tokens',
+      },
+    });
+
+    const result = await callLLM('anthropic', 'sk-ant-test', 'claude-sonnet-4-6', messages);
+    expect(result).toBe('partial');
+
+    const noticeCalls = (Notice as jest.Mock).mock.calls.map((c: [string]) => c[0]);
+    expect(noticeCalls).toContain('Warning: response may be truncated due to token limit.');
+  });
+
+  test('API error: throws LLMError on non-200 response', async () => {
+    (requestUrl as jest.Mock).mockResolvedValueOnce({
+      status: 401,
+      json: { error: { message: 'invalid key' } },
+    });
+
+    await expect(callLLM('anthropic', 'sk-ant-test', 'claude-sonnet-4-6', messages))
+      .rejects.toBeInstanceOf(LLMError);
+  });
+});
+
+describe('Provider dispatch', () => {
+  test('callLLM("openai", ...) calls api.openai.com', async () => {
+    (requestUrl as jest.Mock).mockResolvedValueOnce({
+      status: 200,
+      json: {
+        choices: [{ message: { content: 'OpenAI output' }, finish_reason: 'stop' }],
+      },
+    });
+
+    await callLLM('openai', 'sk-test', 'gpt-4o-mini', messages);
+
+    const call = (requestUrl as jest.Mock).mock.calls[0][0] as { url: string };
+    expect(call.url).toContain('api.openai.com');
+  });
+});
+
+describe('GenerationService provider error label', () => {
+  test('shows provider label in error Notice when Gemini API key is invalid', async () => {
+    const app = createMockApp();
+    const note1 = new TFile('folder/note1.md');
+    const folder = new TFolder('folder', [note1]);
+    (app.vault.getAbstractFileByPath as jest.Mock)
+      .mockReturnValueOnce(folder)
+      .mockReturnValue(null);
+    (app.vault.read as jest.Mock).mockResolvedValue('content');
+    (requestUrl as jest.Mock).mockResolvedValueOnce({ status: 401, json: {} });
+
+    const geminiSettings: ActiveRecallSettings = {
+      provider: 'gemini',
+      openai: { apiKey: '', model: 'gpt-4o-mini' },
+      gemini: { apiKey: 'AIza-test', model: 'gemini-2.5-flash' },
+      anthropic: { apiKey: '', model: 'claude-sonnet-4-6' },
+      language: '',
+      generateHints: true,
+      generateReferenceAnswers: true,
+      generateConceptMap: true,
+      customInstructions: '',
+    };
+
+    const statusBar = createMockStatusBarItem();
+    const service = new GenerationService(app as never, geminiSettings, statusBar);
+    await service.generate('folder');
+
+    const noticeCalls = (Notice as jest.Mock).mock.calls.map((c: [string]) => c[0]);
+    expect(noticeCalls.some((msg: string) => msg.includes('Gemini'))).toBe(true);
+  });
 });
