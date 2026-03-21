@@ -178,6 +178,7 @@ export class GenerationService {
     ) {}
 
     async generate(folderPath: string): Promise<void> {
+        const providerCfg = this.settings[this.settings.provider];
         this.statusBarItem.setText('Generating self-test...');
         try {
             const files = collectNoteFiles(this.app, folderPath);
@@ -196,7 +197,7 @@ export class GenerationService {
                 // CTX-02: single call
                 const userMessage = buildBatchPrompt(batches[0]!, this.settings);
                 const messages = buildMessages(SYSTEM_MESSAGE, userMessage);
-                finalContent = await callLLM(this.settings.apiKey, this.settings.model, messages);
+                finalContent = await callLLM(providerCfg.apiKey, providerCfg.model, messages);
             } else {
                 // CTX-03: batch + synthesize
                 const partialOutputs: string[] = [];
@@ -204,12 +205,12 @@ export class GenerationService {
                     this.statusBarItem.setText(`Generating self-test... (batch ${i + 1}/${batches.length})`);
                     const userMessage = buildBatchPrompt(batches[i]!, this.settings);
                     const messages = buildMessages(SYSTEM_MESSAGE, userMessage);
-                    const partial = await callLLM(this.settings.apiKey, this.settings.model, messages);
+                    const partial = await callLLM(providerCfg.apiKey, providerCfg.model, messages);
                     partialOutputs.push(partial);
                 }
                 const synthesisMessage = buildSynthesisPrompt(partialOutputs, this.settings);
                 const synthesisMessages = buildMessages(SYSTEM_MESSAGE, synthesisMessage);
-                finalContent = await callLLM(this.settings.apiKey, this.settings.model, synthesisMessages);
+                finalContent = await callLLM(providerCfg.apiKey, providerCfg.model, synthesisMessages);
             }
 
             // Prepend YAML frontmatter

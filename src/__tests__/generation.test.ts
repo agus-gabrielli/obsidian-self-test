@@ -18,8 +18,9 @@ import type { ActiveRecallSettings } from '../settings';
 
 const defaultSettings: ActiveRecallSettings = {
   provider: 'openai',
-  apiKey: 'sk-test',
-  model: 'gpt-4o-mini',
+  openai: { apiKey: 'sk-test', model: 'gpt-4o-mini' },
+  gemini: { apiKey: '', model: 'gemini-2.5-flash' },
+  anthropic: { apiKey: '', model: 'claude-sonnet-4-6' },
   language: '',
   generateHints: true,
   generateReferenceAnswers: true,

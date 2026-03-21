@@ -1,5 +1,5 @@
 import { Notice, Plugin, TFile } from 'obsidian';
-import { ActiveRecallSettings, DEFAULT_SETTINGS, ActiveRecallSettingTab } from './settings';
+import { ActiveRecallSettings, DEFAULT_SETTINGS, ActiveRecallSettingTab, migrateV1Settings } from './settings';
 import { GenerationService } from './generation';
 import { VIEW_TYPE_ACTIVE_RECALL, ActiveRecallSidebarView, buildActivateView, buildContextMenuHandler } from './sidebar';
 
@@ -97,7 +97,9 @@ export default class ActiveRecallPlugin extends Plugin {
     }
 
     async loadSettings() {
-        this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData() as Partial<ActiveRecallSettings>);
+        const savedData = ((await this.loadData()) ?? {}) as Record<string, unknown>;
+        migrateV1Settings(savedData);
+        this.settings = Object.assign({}, DEFAULT_SETTINGS, savedData) as ActiveRecallSettings;
     }
 
     async saveSettings() {
