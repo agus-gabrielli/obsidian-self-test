@@ -67,13 +67,13 @@
 
 ### Collection Modes
 
-- [ ] **COL-01**: User can generate a self-test from all notes sharing a specific tag via a tag picker modal
-- [ ] **COL-02**: Tag picker modal shows all vault tags with autocomplete/filtering
-- [ ] **COL-03**: Tag-based output goes to a `_self-tests/` folder (e.g. `_self-tests/_self-test-python-language.md`)
-- [ ] **COL-04**: User can generate a self-test from a root/MOC note plus all its directly linked notes (depth 1)
-- [ ] **COL-05**: User can optionally include depth-2 links (links of links) via a toggle in the picker
+- [x] **COL-01**: User can generate a self-test from all notes sharing a specific tag via a tag picker modal
+- [x] **COL-02**: Tag picker modal shows all vault tags with autocomplete/filtering
+- [x] **COL-03**: Tag-based output goes to a `_self-tests/` folder (e.g. `_self-tests/_self-test-python-language.md`)
+- [x] **COL-04**: User can generate a self-test from a root/MOC note plus all its directly linked notes (depth 1)
+- [x] **COL-05**: User can optionally include depth-2 links (links of links) via a toggle in the picker
 - [ ] **COL-06**: User can generate a self-test for a single note (context menu on files + command palette)
-- [ ] **COL-07**: Single-note output goes to the same folder as the source note (e.g. `my-note_self-test.md`)
+- [x] **COL-07**: Single-note output goes to the same folder as the source note (e.g. `my-note_self-test.md`)
 
 ### UI Updates
 
@@ -150,13 +150,13 @@
 | PROV-05 | Phase 8 | Complete |
 | PROV-06 | Phase 8 | Complete |
 | PROV-07 | Phase 7 | Complete |
-| COL-01 | Phase 9 | Pending |
-| COL-02 | Phase 9 | Pending |
-| COL-03 | Phase 9 | Pending |
-| COL-04 | Phase 9 | Pending |
-| COL-05 | Phase 9 | Pending |
+| COL-01 | Phase 9 | Complete |
+| COL-02 | Phase 9 | Complete |
+| COL-03 | Phase 9 | Complete |
+| COL-04 | Phase 9 | Complete |
+| COL-05 | Phase 9 | Complete |
 | COL-06 | Phase 9 | Pending |
-| COL-07 | Phase 9 | Pending |
+| COL-07 | Phase 9 | Complete |
 | UI-03 | Phase 10 | Pending |
 | UI-04 | Phase 10 | Pending |
 | DIST-03 | Phase 11 | Pending |
