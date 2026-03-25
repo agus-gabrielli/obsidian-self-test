@@ -187,7 +187,7 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 10-01-PLAN.md - Add activeTab setting, generatingTags/generatingLinks Sets, extend mock, write failing test stubs (Wave 1)
+- [x] 10-01-PLAN.md - Add activeTab setting, generatingTags/generatingLinks Sets, extend mock, write failing test stubs (Wave 1)
 - [ ] 10-02-PLAN.md - Rewrite sidebar.ts with tab bar and mode panels, update main.ts constructor, add CSS (Wave 2)
 - [ ] 10-03-PLAN.md - Production build and human-verify tabbed sidebar in Obsidian (Wave 3)
 
@@ -220,5 +220,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 7. Provider Settings and Migration | 2/2 | Complete   | 2026-03-21 |
 | 8. Multi-Provider LLM Dispatch | 2/2 | Complete | 2026-03-21 |
 | 9. Flexible Note Collection | 2/3 | In Progress|  |
-| 10. Sidebar Redesign | 0/3 | Not started | - |
+| 10. Sidebar Redesign | 1/3 | In Progress|  |
 | 11. v2.0 Release | 0/TBD | Not started | - |

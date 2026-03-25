@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Phases
-current_phase: 09
-current_plan: Not started
-status: completed
-last_updated: "2026-03-25T21:48:13.471Z"
+current_phase: 10
+current_plan: 2
+status: executing
+last_updated: "2026-03-25T22:53:00Z"
 last_activity: 2026-03-25
 progress:
-  total_phases: 9
+  total_phases: 10
   completed_phases: 9
-  total_plans: 22
-  completed_plans: 22
+  total_plans: 25
+  completed_plans: 23
 ---
 
 # Session State
@@ -20,15 +20,15 @@ progress:
 
 See: .planning/PROJECT.md (updated 2026-03-21)
 **Core value:** Users can generate a structured self-test from any folder of notes in one click, turning passive note review into active recall practice.
-**Current focus:** Phase 09 — flexible-note-collection
+**Current focus:** Phase 10 — sidebar-redesign
 
 ## Position
 
 **Milestone:** v2.0 Multi-Provider & Flexible Collection
-**Current phase:** 09
-**Current plan:** Not started
-**Status:** Milestone complete
-**Progress bar:** [██████████] 95% (21/22 plans complete)
+**Current phase:** 10
+**Current plan:** 1
+**Status:** Executing Phase 10
+**Progress bar:** [██████████] 96% (23/25 plans complete)
 **Last activity:** 2026-03-25
 
 ## v2.0 Phase Summary
@@ -40,6 +40,12 @@ See: .planning/PROJECT.md (updated 2026-03-21)
 | 9 - Flexible Note Collection | Generate self-tests from notes by tag, by linked notes, or single note | COL-01 through COL-07 |
 | 10 - Sidebar Redesign | Sidebar supports all four modes with clear navigation | UI-03, UI-04 |
 | 11 - v2.0 Release | README updated; store submission PR open | DIST-03, DIST-04 |
+
+## Key Architecture Decisions (from Phase 10-01 execution)
+
+- 2026-03-25 (10-01): Per-mode tracking in GenerationService uses three Sets (generatingFolders, generatingTags, generatingLinks) instead of a single trackingKey variable - avoids null checks and extends cleanly to future modes
+- 2026-03-25 (10-01): makeMockEl exported from obsidian mock so sidebar tests can import and inspect mock DOM directly
+- 2026-03-25 (10-01): activeTab defaults to 'folders' per D-04 (plugin remembers last active tab)
 
 ## Key Architecture Decisions (from Phase 09-02 execution)
 
@@ -148,6 +154,8 @@ See: .planning/PROJECT.md (updated 2026-03-21)
 - 2026-03-21: Executed 09-01 (collector pure functions) - 2 TDD tasks, 2 commits (3e665d4 RED, 32011d9 GREEN) - 121 tests pass, 0 TS errors
 - 2026-03-21: Executed 09-02 (GenerationService refactor + modals) - 2 tasks, 2 commits (053e48b, c56f850) - 121 tests pass, 0 TS errors
 - 2026-03-21: Stopped at - Completed 09-02-PLAN.md
+- 2026-03-25: Executed 10-01 (sidebar data layer scaffold) - 2 tasks, 2 commits (f16313f, 31507b4) - 11 existing sidebar tests pass, 7 new stubs fail as intended
+- 2026-03-25: Stopped at - Completed 10-01-PLAN.md
 
 ## Accumulated Context
 

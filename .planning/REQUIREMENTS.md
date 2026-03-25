@@ -77,8 +77,8 @@
 
 ### UI Updates
 
-- [ ] **UI-03**: Sidebar supports all generation modes (folder, tag, linked notes, single note) with clear navigation
-- [ ] **UI-04**: Sidebar shows tag-based and link-based self-tests alongside folder-based ones
+- [x] **UI-03**: Sidebar supports all generation modes (folder, tag, linked notes, single note) with clear navigation
+- [x] **UI-04**: Sidebar shows tag-based and link-based self-tests alongside folder-based ones
 
 ### Distribution
 
@@ -157,8 +157,8 @@
 | COL-05 | Phase 9 | Complete |
 | COL-06 | Phase 9 | Complete |
 | COL-07 | Phase 9 | Complete |
-| UI-03 | Phase 10 | Pending |
-| UI-04 | Phase 10 | Pending |
+| UI-03 | Phase 10 | Complete |
+| UI-04 | Phase 10 | Complete |
 | DIST-03 | Phase 11 | Pending |
 | DIST-04 | Phase 11 | Pending |
 
