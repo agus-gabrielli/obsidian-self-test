@@ -220,7 +220,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 7. Provider Settings and Migration | 2/2 | Complete   | 2026-03-21 |
 | 8. Multi-Provider LLM Dispatch | 2/2 | Complete | 2026-03-21 |
 | 9. Flexible Note Collection | 2/3 | In Progress|  |
-| 10. Sidebar Redesign | 3/3 | Complete   | 2026-03-25 |
+| 10. Sidebar Redesign | 4/4 | Complete   | 2026-03-25 |
 | 11. v2.0 Release | 0/TBD | Not started | - |
 
 ---
@@ -231,7 +231,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 
 **Goal:** Add a delete button (trash icon) next to Regenerate on each self-test row across all sidebar tabs, with confirmation before deleting the file
 **Requirements:** TBD
-**Plans:** 0 plans
+**Plans:** 4/4 plans complete
 
 Plans:
 - [ ] TBD (promote with /gsd:review-backlog when ready)

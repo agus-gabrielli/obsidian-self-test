@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Phases
 current_phase: 10
-current_plan: 3
-status: completed
-last_updated: "2026-03-25T23:58:00Z"
+current_plan: 4
+status: verifying
+last_updated: "2026-03-25T23:44:00Z"
 last_activity: 2026-03-25
 progress:
-  total_phases: 10
+  total_phases: 12
   completed_phases: 10
-  total_plans: 25
-  completed_plans: 25
+  total_plans: 26
+  completed_plans: 26
 ---
 
 # Session State
@@ -40,6 +40,12 @@ See: .planning/PROJECT.md (updated 2026-03-21)
 | 9 - Flexible Note Collection | Generate self-tests from notes by tag, by linked notes, or single note | COL-01 through COL-07 |
 | 10 - Sidebar Redesign | Sidebar supports all four modes with clear navigation | UI-03, UI-04 |
 | 11 - v2.0 Release | README updated; store submission PR open | DIST-03, DIST-04 |
+
+## Key Architecture Decisions (from Phase 10-04 execution)
+
+- 2026-03-25 (10-04): Sidebar pre-adds keys to generating Sets before calling generate() so spinner shows before async LLM starts; Set handles double-add/delete from GenerationService safely
+- 2026-03-25 (10-04): renderFoldersPanel shows only generated folders (no "Not generated" section) plus placeholder rows for in-progress; matches Tags/Links panel consistency
+- 2026-03-25 (10-04): openSidebarWithTab saves activeTab to settings before activating view so tab selection persists across sidebar open/close cycles
 
 ## Key Architecture Decisions (from Phase 10-02 execution)
 
@@ -165,6 +171,7 @@ See: .planning/PROJECT.md (updated 2026-03-21)
 - 2026-03-25: Executed 10-02 (sidebar rewrite - tabbed panels) - 2 tasks, 2 commits (65d4a99, 882a597) - 134 tests pass, 0 TS errors, Phase 10 complete
 - 2026-03-25: Stopped at - Completed 10-02-PLAN.md (Phase 10 complete)
 - 2026-03-25: Executed 10-03 (human verify tabbed sidebar) - 1 auto task (bb77607), checkpoint reached for human verification - 134 tests pass, 0 TS errors, production bundle 31287 bytes
+- 2026-03-25: Executed 10-04 (sidebar UX polish from human-verify feedback) - 1 auto task (d058403), checkpoint reached for human verification - 134 tests pass, 0 TS errors
 
 ## Accumulated Context
 
