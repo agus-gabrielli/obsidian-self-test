@@ -44,6 +44,18 @@ The sidebar presents all four generation modes (folder, tag, linked notes, singl
 ### Auto-refresh
 - **D-17:** After generation from any mode completes, the sidebar reflects the updated state without manual refresh (existing behavior extended to new tabs)
 
+### Folders tab consistency (gap-closure from human-verify)
+- **D-18:** Folders tab shows only generated folders (not "Not generated" section) - consistent with Tags/Links tabs
+- **D-19:** "Generate for new folder" button at top of Folders tab opens a folder picker modal
+
+### Generating state visibility (gap-closure from human-verify)
+- **D-20:** When regenerating an existing tag/links entry, the spinner ("Generating...") must show on that entry
+- **D-21:** When generating a NEW item (no self-test file yet), a placeholder entry with "Generating..." appears in the list immediately
+- **D-22:** A prominent banner inside the sidebar panel (top of active tab) shows "Generating self-test..." during generation - more visible than the status bar indicator alone
+
+### Auto-open sidebar (gap-closure from human-verify)
+- **D-23:** When generating from command palette or context menu (not sidebar), the sidebar auto-opens and switches to the corresponding tab so the user sees the generation progress
+
 ### Claude's Discretion
 - Tab styling and active state visual treatment
 - Exact header subtitle text
@@ -52,6 +64,8 @@ The sidebar presents all four generation modes (folder, tag, linked notes, singl
 - How generating state is tracked for tag/links modes (extending or paralleling `generatingFolders`)
 - CSS class naming for new tab elements
 - Empty state text for tags/links panels when no self-tests exist yet
+- Folder picker modal implementation (SuggestModal or FuzzySuggestModal over vault folders)
+- Banner styling and animation
 
 </decisions>
 
@@ -120,6 +134,8 @@ No specific references - open to standard Obsidian sidebar patterns.
 - Content change detection (flagging folders with modified notes since last generation) - future requirement STA-01/STA-02
 - Spaced repetition priority ordering in sidebar - future requirement SR-02
 - Single-note self-test listing in sidebar - intentionally excluded; revisit if user feedback demands it
+- Trash icon for deleting self-tests from sidebar - backlog item 999.1
+- Native FuzzySuggestModal for linked notes picker - backlog item 999.2
 
 </deferred>
 
