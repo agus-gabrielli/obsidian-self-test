@@ -9,6 +9,7 @@ import {
     buildNoteOutputPath,
     writeOutputToPath,
     buildFrontmatter,
+    isSelfTestFile,
 } from './collectors';
 import {
     SYSTEM_MESSAGE,
@@ -42,7 +43,7 @@ export function collectNoteFiles(app: App, folderPath: string): TFile[] {
         (child): child is TFile =>
             child instanceof TFile &&
             child.extension === 'md' &&
-            child.basename !== '_self-test'
+            !isSelfTestFile(child)
     );
 }
 

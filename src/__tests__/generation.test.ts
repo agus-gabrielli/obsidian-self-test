@@ -67,6 +67,20 @@ describe('GenerationService', () => {
       expect(result).toContain(note2);
     });
 
+    test('excludes single-note self-test files (suffix pattern) from folder collection', () => {
+      const app = createMockApp();
+      const note1 = new TFile('folder/newton.md');
+      const noteSelfTest = new TFile('folder/newton_self-test.md');
+      const folder = new TFolder('folder', [note1, noteSelfTest]);
+
+      (app.vault.getAbstractFileByPath as jest.Mock).mockReturnValue(folder);
+
+      const result = collectNoteFiles(app as any, 'folder');
+      expect(result).toHaveLength(1);
+      expect(result).toContain(note1);
+      expect(result).not.toContain(noteSelfTest);
+    });
+
     test('returns empty array for non-existent path', () => {
       const app = createMockApp();
       (app.vault.getAbstractFileByPath as jest.Mock).mockReturnValue(null);

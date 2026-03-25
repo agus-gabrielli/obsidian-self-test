@@ -215,7 +215,11 @@ export async function writeOutputToPath(
  */
 export function buildFrontmatter(spec: CollectionSpec, collectedFiles: TFile[]): string {
     const sourceNotes = collectedFiles
-        .map((f) => `"[[${f.basename}]]"`)
+        .map((f) => {
+            const display = f.basename;
+            const fullPath = f.path.replace(/\.md$/, '');
+            return `"[[${fullPath}|${display}]]"`;
+        })
         .join(', ');
 
     let sourceMode: string;

@@ -352,7 +352,7 @@ describe('collectNotesByLinks', () => {
     expect(result).toContain(fileB);
   });
 
-  test('excludes self-test files from link traversal', () => {
+  test('excludes self-test files from outgoing link traversal', () => {
     const app = createMockApp();
     const rootFile = new TFile('root.md');
     const selfTestFile = new TFile('_self-tests/links/something.md');
@@ -362,6 +362,26 @@ describe('collectNotesByLinks', () => {
     };
     (app.vault.getFileByPath as jest.Mock).mockImplementation((path: string) => {
       if (path === '_self-tests/links/something.md') return selfTestFile;
+      return null;
+    });
+
+    const result = collectNotesByLinks(app as any, rootFile as any, 1);
+    expect(result).toHaveLength(1);
+    expect(result).toContain(rootFile);
+    expect(result).not.toContain(selfTestFile);
+  });
+
+  test('excludes self-test files from backlink traversal', () => {
+    const app = createMockApp();
+    const rootFile = new TFile('notes/context-rot.md');
+    const selfTestFile = new TFile('_self-tests/links/context-rot.md');
+
+    // Self-test file links back to root (via wikilinks in frontmatter/content)
+    app.metadataCache.resolvedLinks = {
+      '_self-tests/links/context-rot.md': { 'notes/context-rot.md': 1 },
+    };
+    (app.vault.getFileByPath as jest.Mock).mockImplementation((path: string) => {
+      if (path === '_self-tests/links/context-rot.md') return selfTestFile;
       return null;
     });
 
@@ -495,15 +515,15 @@ describe('isSelfTestFile', () => {
 // ────────────────────────────────────────────────────────────────────────────
 
 describe('buildFrontmatter', () => {
-  test('tag mode includes source_mode, source, source_notes', () => {
+  test('tag mode includes source_mode, source, source_notes with full-path wikilinks', () => {
     const spec: CollectionSpec = { mode: 'tag', tag: 'python' };
     const files = [new TFile('notes/note1.md') as any, new TFile('notes/note2.md') as any];
 
     const result = buildFrontmatter(spec, files);
     expect(result).toContain('source_mode: tag');
     expect(result).toContain('source: "python"');
-    expect(result).toContain('[[note1]]');
-    expect(result).toContain('[[note2]]');
+    expect(result).toContain('[[notes/note1|note1]]');
+    expect(result).toContain('[[notes/note2|note2]]');
   });
 
   test('links mode uses root basename as source', () => {
@@ -514,6 +534,7 @@ describe('buildFrontmatter', () => {
     const result = buildFrontmatter(spec, files);
     expect(result).toContain('source_mode: links');
     expect(result).toContain('source: "my-moc"');
+    expect(result).toContain('[[notes/my-moc|my-moc]]');
   });
 
   test('folder mode uses folder path as source', () => {
