@@ -153,3 +153,15 @@
   text-align: center;
   padding: 20px 8px;
 }
+
+.active-recall-generating-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--interactive-accent) 12%, transparent);
+  font-size: 0.85em;
+  color: var(--text-normal);
+}

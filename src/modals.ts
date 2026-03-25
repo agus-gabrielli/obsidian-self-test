@@ -1,4 +1,4 @@
-import { App, SuggestModal, TFile, Modal, Notice } from 'obsidian';
+import { App, SuggestModal, TFile, TFolder, Modal, Notice } from 'obsidian';
 import { getAllVaultTags, collectNotesByLinks } from './collectors';
 
 export class TagPickerModal extends SuggestModal<string> {
@@ -42,6 +42,41 @@ export class TagPickerModal extends SuggestModal<string> {
 
     onChooseSuggestion(tag: string): void {
         this.onSelect(tag);
+    }
+}
+
+export class FolderPickerModal extends SuggestModal<TFolder> {
+    private folders: TFolder[];
+    private onSelect: (folderPath: string) => void;
+
+    constructor(app: App, onSelect: (folderPath: string) => void) {
+        super(app);
+        this.onSelect = onSelect;
+        this.setPlaceholder('Search folders...');
+        // Eligible folders: have at least one non-self-test .md file
+        this.folders = (app as App).vault.getAllFolders(false).filter((folder: TFolder) => {
+            if (folder.path === '_self-tests' || folder.path.startsWith('_self-tests/')) return false;
+            return folder.children.some(
+                (child) =>
+                    child instanceof TFile &&
+                    child.extension === 'md' &&
+                    child.basename !== '_self-test'
+            );
+        });
+    }
+
+    getSuggestions(query: string): TFolder[] {
+        const q = query.toLowerCase();
+        if (!q) return this.folders;
+        return this.folders.filter((folder) => folder.path.toLowerCase().includes(q));
+    }
+
+    renderSuggestion(folder: TFolder, el: HTMLElement): void {
+        el.createSpan({ text: folder.path });
+    }
+
+    onChooseSuggestion(folder: TFolder): void {
+        this.onSelect(folder.path);
     }
 }
 

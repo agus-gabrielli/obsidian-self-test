@@ -1,7 +1,7 @@
-import { Notice, Plugin, TFile } from 'obsidian';
+import { App, Notice, Plugin, TFile } from 'obsidian';
 import { ActiveRecallSettings, DEFAULT_SETTINGS, ActiveRecallSettingTab, migrateV1Settings } from './settings';
 import { GenerationService } from './generation';
-import { VIEW_TYPE_ACTIVE_RECALL, ActiveRecallSidebarView, buildActivateView, buildContextMenuHandler } from './sidebar';
+import { VIEW_TYPE_ACTIVE_RECALL, ActiveRecallSidebarView, ActiveTab, buildActivateView, buildContextMenuHandler } from './sidebar';
 import { TagPickerModal, LinkedNotesPickerModal } from './modals';
 import { isSelfTestFile } from './collectors';
 
@@ -16,6 +16,15 @@ function getSidebarView(app: import('obsidian').App): ActiveRecallSidebarView | 
 
 function refreshSidebarIfOpen(app: import('obsidian').App): void {
     getSidebarView(app)?.refresh();
+}
+
+async function openSidebarWithTab(app: App, plugin: ActiveRecallPlugin, tab: ActiveTab): Promise<void> {
+    plugin.settings.activeTab = tab;
+    await plugin.saveSettings();
+    const activateView = buildActivateView(app);
+    await activateView();
+    // After sidebar is open, refresh to show the generating state
+    setTimeout(() => refreshSidebarIfOpen(app), 100);
 }
 
 export default class ActiveRecallPlugin extends Plugin {
@@ -45,10 +54,15 @@ export default class ActiveRecallPlugin extends Plugin {
         this.registerEvent(
             this.app.workspace.on(
                 'file-menu',
-                buildContextMenuHandler((folderPath: string) => {
+                buildContextMenuHandler(async (folderPath: string) => {
+                    await openSidebarWithTab(this.app, this, 'folders');
                     const sidebar = getSidebarView(this.app);
-                    if (sidebar) return sidebar.generateForFolder(folderPath);
-                    return generationService.generate({ mode: 'folder', folderPath }).then(() => refreshSidebarIfOpen(this.app));
+                    if (sidebar) {
+                        await sidebar.generateForFolder(folderPath);
+                    } else {
+                        await generationService.generate({ mode: 'folder', folderPath });
+                        refreshSidebarIfOpen(this.app);
+                    }
                 })
             )
         );
@@ -67,6 +81,7 @@ export default class ActiveRecallPlugin extends Plugin {
                     return;
                 }
                 const folderPath = activeFile.parent?.path ?? '/';
+                await openSidebarWithTab(this.app, this, 'folders');
                 const sidebar = getSidebarView(this.app);
                 if (sidebar) {
                     await sidebar.generateForFolder(folderPath);
@@ -82,8 +97,14 @@ export default class ActiveRecallPlugin extends Plugin {
             name: 'Generate Self-Test by Tag',
             callback: () => {
                 new TagPickerModal(this.app, async (tag: string) => {
-                    await generationService.generate({ mode: 'tag', tag });
-                    refreshSidebarIfOpen(this.app);
+                    await openSidebarWithTab(this.app, this, 'tags');
+                    const sidebar = getSidebarView(this.app);
+                    if (sidebar) {
+                        await sidebar.generateForTag(tag);
+                    } else {
+                        await generationService.generate({ mode: 'tag', tag });
+                        refreshSidebarIfOpen(this.app);
+                    }
                 }).open();
             },
         });
@@ -93,8 +114,14 @@ export default class ActiveRecallPlugin extends Plugin {
             name: 'Generate Self-Test from Linked Notes',
             callback: () => {
                 new LinkedNotesPickerModal(this.app, async (file: TFile, depth: 1 | 2) => {
-                    await generationService.generate({ mode: 'links', rootFile: file, depth });
-                    refreshSidebarIfOpen(this.app);
+                    await openSidebarWithTab(this.app, this, 'links');
+                    const sidebar = getSidebarView(this.app);
+                    if (sidebar) {
+                        await sidebar.generateForLinks(file, depth);
+                    } else {
+                        await generationService.generate({ mode: 'links', rootFile: file, depth });
+                        refreshSidebarIfOpen(this.app);
+                    }
                 }).open();
             },
         });

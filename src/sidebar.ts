@@ -1,7 +1,7 @@
 import { ItemView, WorkspaceLeaf, App, TFile, TFolder, Menu, TAbstractFile } from 'obsidian';
 import { GenerationService } from './generation';
 import type ActiveRecallPlugin from './main';
-import { TagPickerModal, LinkedNotesPickerModal } from './modals';
+import { TagPickerModal, LinkedNotesPickerModal, FolderPickerModal } from './modals';
 import { isSelfTestFile } from './collectors';
 
 export const VIEW_TYPE_ACTIVE_RECALL = 'active-recall-panel';
@@ -179,6 +179,17 @@ export class ActiveRecallSidebarView extends ItemView {
       });
     }
 
+    // Generating banner - shown when any generation is in progress
+    const anyGenerating =
+      this.generationService.generatingFolders.size +
+      this.generationService.generatingTags.size +
+      this.generationService.generatingLinks.size > 0;
+    if (anyGenerating) {
+      const banner = container.createDiv({ cls: 'active-recall-generating-banner' });
+      banner.createSpan({ cls: 'active-recall-spinner' });
+      banner.createSpan({ text: 'Generating self-test...' });
+    }
+
     // Panel content - separate DOM subtrees per mode
     const panel = container.createDiv({ cls: 'active-recall-panel-content' });
     if (this.activeTab === 'folders') this.renderFoldersPanel(panel);
@@ -187,45 +198,52 @@ export class ActiveRecallSidebarView extends ItemView {
   }
 
   private renderFoldersPanel(panel: HTMLElement): void {
+    // "Generate for new folder" button at top
+    const newBtn = panel.createEl('button', {
+      text: 'Generate for new folder',
+      cls: 'active-recall-btn active-recall-generate-new-btn',
+    });
+    newBtn.addEventListener('click', () => {
+      new FolderPickerModal(this._app, (folderPath: string) => this.generateForFolder(folderPath)).open();
+    });
+
     const statuses = getFolderStatuses(this._app);
+    // Only show folders that have a _self-test.md (generated)
     const withSelfTest = statuses.filter((s) => s.selfTestFile !== null);
-    const withoutSelfTest = statuses.filter((s) => s.selfTestFile === null);
 
-    if (withSelfTest.length > 0) {
-      const section = panel.createDiv({ cls: 'active-recall-section' });
-      section.createEl('p', { text: 'Generated', cls: 'active-recall-section-label' });
-      for (const status of withSelfTest) {
-        this.renderSelfTestRow(
-          section,
-          status.folder.path,
-          status.selfTestFile ? getLastGeneratedDate(status.selfTestFile) : null,
-          status.selfTestFile,
-          this.generationService.generatingFolders.has(status.folder.path),
-          () => this.generateForFolder(status.folder.path)
-        );
-      }
-    }
+    // Collect folder paths already rendered (from withSelfTest) plus any in-progress
+    const renderedFolderPaths = new Set<string>(withSelfTest.map((s) => s.folder.path));
 
-    if (withoutSelfTest.length > 0) {
-      const section = panel.createDiv({ cls: 'active-recall-section' });
-      section.createEl('p', { text: 'Not generated', cls: 'active-recall-section-label' });
-      for (const status of withoutSelfTest) {
-        this.renderSelfTestRow(
-          section,
-          status.folder.path,
-          null,
-          null,
-          this.generationService.generatingFolders.has(status.folder.path),
-          () => this.generateForFolder(status.folder.path)
-        );
-      }
-    }
+    // Placeholder rows for folders currently generating that don't have a self-test yet
+    const generatingAndNew = Array.from(this.generationService.generatingFolders).filter(
+      (fp) => !renderedFolderPaths.has(fp)
+    );
 
-    if (statuses.length === 0) {
+    if (withSelfTest.length === 0 && generatingAndNew.length === 0) {
       panel.createEl('p', {
-        text: 'No folders with notes found.',
+        text: 'No self-tests generated yet. Use the button above to create one.',
         cls: 'active-recall-empty-state',
       });
+      return;
+    }
+
+    const section = panel.createDiv({ cls: 'active-recall-section' });
+    section.createEl('p', { text: 'Generated', cls: 'active-recall-section-label' });
+
+    // Placeholder rows for folders being generated that have no self-test yet
+    for (const folderPath of generatingAndNew) {
+      this.renderSelfTestRow(section, folderPath, null, null, true, () => this.generateForFolder(folderPath));
+    }
+
+    for (const status of withSelfTest) {
+      this.renderSelfTestRow(
+        section,
+        status.folder.path,
+        status.selfTestFile ? getLastGeneratedDate(status.selfTestFile) : null,
+        status.selfTestFile,
+        this.generationService.generatingFolders.has(status.folder.path),
+        () => this.generateForFolder(status.folder.path)
+      );
     }
   }
 
@@ -244,7 +262,17 @@ export class ActiveRecallSidebarView extends ItemView {
       (f: TFile) => f.extension === 'md' && f.path.startsWith('_self-tests/tags/')
     );
 
-    if (tagFiles.length === 0) {
+    // Derive tag names for existing files
+    const existingTagNames = new Set<string>(
+      tagFiles.map((f: TFile) => f.path.replace('_self-tests/tags/', '').replace(/\.md$/, ''))
+    );
+
+    // Placeholder entries for tags being generated that don't have a file yet
+    const generatingAndNew = Array.from(this.generationService.generatingTags).filter(
+      (tag) => !existingTagNames.has(tag)
+    );
+
+    if (tagFiles.length === 0 && generatingAndNew.length === 0) {
       panel.createEl('p', {
         text: 'No tag-based self-tests yet. Use the button above to create one.',
         cls: 'active-recall-empty-state',
@@ -254,6 +282,11 @@ export class ActiveRecallSidebarView extends ItemView {
 
     const section = panel.createDiv({ cls: 'active-recall-section' });
     section.createEl('p', { text: 'Generated', cls: 'active-recall-section-label' });
+
+    // Placeholder rows for tags being generated with no file yet
+    for (const tag of generatingAndNew) {
+      this.renderSelfTestRow(section, tag, null, null, true, () => this.generateForTag(tag));
+    }
 
     for (const file of tagFiles) {
       // Derive tag name: _self-tests/tags/lang/python.md -> lang/python
@@ -286,7 +319,15 @@ export class ActiveRecallSidebarView extends ItemView {
       (f: TFile) => f.extension === 'md' && f.path.startsWith('_self-tests/links/')
     );
 
-    if (linkFiles.length === 0) {
+    // Basenames for existing link files
+    const existingBasenames = new Set<string>(linkFiles.map((f: TFile) => f.basename));
+
+    // Placeholder entries for links being generated that don't have a file yet
+    const generatingAndNew = Array.from(this.generationService.generatingLinks).filter(
+      (basename) => !existingBasenames.has(basename)
+    );
+
+    if (linkFiles.length === 0 && generatingAndNew.length === 0) {
       panel.createEl('p', {
         text: 'No link-based self-tests yet. Use the button above to create one.',
         cls: 'active-recall-empty-state',
@@ -296,6 +337,11 @@ export class ActiveRecallSidebarView extends ItemView {
 
     const section = panel.createDiv({ cls: 'active-recall-section' });
     section.createEl('p', { text: 'Generated', cls: 'active-recall-section-label' });
+
+    // Placeholder rows for links being generated with no file yet
+    for (const basename of generatingAndNew) {
+      this.renderSelfTestRow(section, basename, null, null, true, () => {});
+    }
 
     for (const file of linkFiles) {
       this.renderSelfTestRow(
@@ -345,28 +391,35 @@ export class ActiveRecallSidebarView extends ItemView {
   }
 
   public async generateForFolder(folderPath: string): Promise<void> {
-    this.refresh(); // show spinner
+    this.generationService.generatingFolders.add(folderPath);
+    this.refresh(); // show spinner / placeholder immediately
     try {
       await this.generationService.generate({ mode: 'folder', folderPath });
     } finally {
+      this.generationService.generatingFolders.delete(folderPath);
       this.refresh(); // hide spinner
     }
   }
 
   public async generateForTag(tag: string): Promise<void> {
-    this.refresh(); // show spinner
+    const normalizedTag = tag.replace(/^#/, '');
+    this.generationService.generatingTags.add(normalizedTag);
+    this.refresh(); // show spinner / placeholder immediately
     try {
       await this.generationService.generate({ mode: 'tag', tag });
     } finally {
+      this.generationService.generatingTags.delete(normalizedTag);
       this.refresh(); // hide spinner, update list
     }
   }
 
   public async generateForLinks(rootFile: TFile, depth: 1 | 2): Promise<void> {
-    this.refresh();
+    this.generationService.generatingLinks.add(rootFile.basename);
+    this.refresh(); // show spinner / placeholder immediately
     try {
       await this.generationService.generate({ mode: 'links', rootFile, depth });
     } finally {
+      this.generationService.generatingLinks.delete(rootFile.basename);
       this.refresh();
     }
   }
