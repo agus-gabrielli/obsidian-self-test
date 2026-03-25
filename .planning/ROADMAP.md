@@ -28,7 +28,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 7: Provider Settings and Migration** - Users can select and configure any of three LLM providers with per-provider API keys and model selection; existing OpenAI keys are migrated automatically (completed 2026-03-21)
 - [x] **Phase 8: Multi-Provider LLM Dispatch** - Plugin successfully calls Gemini and Claude APIs in addition to OpenAI; provider-specific errors are surfaced with the provider name (completed 2026-03-21)
 - [ ] **Phase 9: Flexible Note Collection** - Users can generate self-tests from notes by tag, by linked notes from a root note, or from a single note
-- [ ] **Phase 10: Sidebar Redesign** - Sidebar supports all four generation modes with clear navigation and shows tag/link-based self-tests alongside folder-based ones
+- [x] **Phase 10: Sidebar Redesign** - Sidebar supports all four generation modes with clear navigation and shows tag/link-based self-tests alongside folder-based ones (completed 2026-03-25)
 - [ ] **Phase 11: v2.0 Release** - README updated with multi-provider and collection mode documentation; plugin passes Obsidian store review and PR is submitted
 
 ---
@@ -189,7 +189,7 @@ Plans:
 Plans:
 - [x] 10-01-PLAN.md - Add activeTab setting, generatingTags/generatingLinks Sets, extend mock, write failing test stubs (Wave 1)
 - [x] 10-02-PLAN.md - Rewrite sidebar.ts with tab bar and mode panels, update main.ts constructor, add CSS (Wave 2)
-- [ ] 10-03-PLAN.md - Production build and human-verify tabbed sidebar in Obsidian (Wave 3)
+- [x] 10-03-PLAN.md - Production build and human-verify tabbed sidebar in Obsidian (Wave 3)
 
 ### Phase 11: v2.0 Release
 **Goal**: README documents multi-provider setup and all new collection modes clearly; the plugin passes Obsidian community store review requirements and the submission PR is open against obsidianmd/obsidian-releases
@@ -220,5 +220,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 7. Provider Settings and Migration | 2/2 | Complete   | 2026-03-21 |
 | 8. Multi-Provider LLM Dispatch | 2/2 | Complete | 2026-03-21 |
 | 9. Flexible Note Collection | 2/3 | In Progress|  |
-| 10. Sidebar Redesign | 2/3 | In Progress|  |
+| 10. Sidebar Redesign | 3/3 | Complete   | 2026-03-25 |
 | 11. v2.0 Release | 0/TBD | Not started | - |
