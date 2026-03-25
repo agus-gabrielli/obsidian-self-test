@@ -6,6 +6,39 @@ import {
   buildActivateView,
   ActiveRecallSidebarView,
 } from '../sidebar';
+import { DEFAULT_SETTINGS } from '../settings';
+
+// Helper to create a testable sidebar instance
+function createTestSidebar(opts: {
+  activeTab?: 'folders' | 'tags' | 'links';
+  vaultFiles?: TFile[];
+  generatingTags?: string[];
+  generatingLinks?: string[];
+  generatingFolders?: string[];
+} = {}) {
+  const app = createMockApp();
+  if (opts.vaultFiles) {
+    app.vault.getFiles.mockReturnValue(opts.vaultFiles);
+  }
+  const mockPlugin = {
+    settings: { ...DEFAULT_SETTINGS, activeTab: opts.activeTab ?? 'folders' },
+    saveSettings: jest.fn().mockResolvedValue(undefined),
+  };
+  const genService = {
+    generatingFolders: new Set<string>(opts.generatingFolders ?? []),
+    generatingTags: new Set<string>(opts.generatingTags ?? []),
+    generatingLinks: new Set<string>(opts.generatingLinks ?? []),
+    generate: jest.fn().mockResolvedValue(undefined),
+  };
+  const leaf = createMockWorkspaceLeaf();
+  const view = new ActiveRecallSidebarView(
+    leaf as never,
+    app as never,
+    mockPlugin as never,
+    genService as never
+  );
+  return { view, app, mockPlugin, genService };
+}
 
 describe('getFolderStatuses', () => {
   it('returns only folders with at least one non-_self-test .md file', () => {
@@ -150,45 +183,264 @@ describe('file-menu context menu handler', () => {
 
 describe('tabbed sidebar', () => {
   it('renderPanel creates a tab bar with three tabs: Folders, Tags, Links', () => {
-    // Setup: create sidebar view, call refresh()
-    // Assert: contentEl.createDiv called with cls 'active-recall-tab-bar'
-    // Assert: three createEl('button') calls with text Folders, Tags, Links
-    expect(true).toBe(false); // stub - will be implemented in Plan 02
+    const { view } = createTestSidebar({ activeTab: 'folders' });
+    view.refresh();
+
+    // contentEl.createDiv is called first to create the panel container
+    expect(view.contentEl.createDiv).toHaveBeenCalledWith({ cls: 'active-recall-panel' });
+
+    // The panel container (first createDiv call result) creates the tab bar div
+    const panelContainer = (view.contentEl.createDiv as jest.Mock).mock.results[0]!.value;
+    expect(panelContainer.createDiv).toHaveBeenCalledWith({ cls: 'active-recall-tab-bar' });
+
+    // The tab bar div creates buttons for each tab
+    const tabBarEl = panelContainer.createDiv.mock.results.find(
+      (r: { value: { createEl: jest.Mock } }) => {
+        const calls = r.value.createEl?.mock?.calls ?? [];
+        return calls.some((c: unknown[]) => c[0] === 'button');
+      }
+    );
+    // The tab bar is the second createDiv call on panelContainer (after header)
+    // Check that buttons for Folders, Tags, Links were created
+    const allCreateElCalls: unknown[][] = [];
+    for (const result of panelContainer.createDiv.mock.results) {
+      const el = result.value as { createEl: jest.Mock };
+      if (el.createEl?.mock?.calls) {
+        allCreateElCalls.push(...el.createEl.mock.calls);
+      }
+    }
+    const buttonTexts = allCreateElCalls
+      .filter((c) => c[0] === 'button')
+      .map((c) => (c[1] as { text: string }).text);
+
+    expect(buttonTexts).toContain('Folders');
+    expect(buttonTexts).toContain('Tags');
+    expect(buttonTexts).toContain('Links');
+    expect(tabBarEl).toBeDefined();
   });
 
   it('clicking Tags tab sets activeTab to tags and re-renders', () => {
-    // Setup: create sidebar, simulate tab click
-    // Assert: activeTab changed, refresh called
-    expect(true).toBe(false);
+    const { view } = createTestSidebar({ activeTab: 'folders' });
+    view.refresh();
+
+    const panelContainer = (view.contentEl.createDiv as jest.Mock).mock.results[0]!.value;
+    // Find the tab bar createDiv result
+    const tabBarResult = panelContainer.createDiv.mock.results.find(
+      (r: { value: { createEl: jest.Mock } }) => {
+        const calls = r.value.createEl?.mock?.calls ?? [];
+        return calls.some((c: unknown[]) => c[0] === 'button');
+      }
+    );
+    expect(tabBarResult).toBeDefined();
+
+    const tabBarEl = tabBarResult.value as { createEl: jest.Mock; addEventListener?: jest.Mock };
+    // Find the Tags button call (index 1 - Folders=0, Tags=1, Links=2)
+    const buttonCalls = tabBarEl.createEl.mock.calls.filter((c: unknown[]) => c[0] === 'button');
+    expect(buttonCalls).toHaveLength(3);
+
+    // Get the Tags button element (second button created)
+    const tagsButtonEl = tabBarEl.createEl.mock.results.filter(
+      (_: unknown, i: number) => tabBarEl.createEl.mock.calls[i]![0] === 'button'
+    )[1]!.value as { addEventListener: jest.Mock };
+
+    // Simulate clicking the Tags tab
+    const clickHandler = tagsButtonEl.addEventListener.mock.calls.find(
+      (c: unknown[]) => c[0] === 'click'
+    )?.[1] as (() => void) | undefined;
+    expect(clickHandler).toBeDefined();
+
+    // Reset createDiv to track the re-render
+    (view.contentEl.createDiv as jest.Mock).mockClear();
+    clickHandler!();
+
+    // After click, refresh was called - verify Tags panel content
+    const newPanelContainer = (view.contentEl.createDiv as jest.Mock).mock.results[0]!.value;
+    // Tags panel creates a "Generate for new tag" button
+    const allElCalls: unknown[][] = [];
+    for (const result of newPanelContainer.createDiv.mock.results) {
+      const el = result.value as { createEl: jest.Mock };
+      if (el.createEl?.mock?.calls) {
+        allElCalls.push(...el.createEl.mock.calls);
+      }
+    }
+    // Also check direct createEl on panel content div
+    const panelContentEl = newPanelContainer.createDiv.mock.results.find(
+      (r: { value: { createEl: jest.Mock } }) =>
+        r.value.createEl?.mock?.calls?.some(
+          (c: unknown[]) => c[0] === 'button' && (c[1] as { text?: string })?.text === 'Generate for new tag'
+        )
+    );
+    expect(panelContentEl).toBeDefined();
   });
 
   it('active tab is restored from settings on construction', () => {
-    // Setup: create sidebar with settings.activeTab = 'tags'
-    // Assert: Tags panel rendered instead of Folders
-    expect(true).toBe(false);
+    const { view } = createTestSidebar({ activeTab: 'tags' });
+    view.refresh();
+
+    // When activeTab is 'tags', the tags panel is rendered
+    // Verify: "Generate for new tag" button is created (Tags panel marker)
+    const panelContainer = (view.contentEl.createDiv as jest.Mock).mock.results[0]!.value;
+
+    // Collect all createEl calls across all divs in the panel
+    function collectCreateElCalls(el: { createEl?: jest.Mock; createDiv?: jest.Mock }): unknown[][] {
+      const calls: unknown[][] = [];
+      if (el.createEl?.mock?.calls) {
+        calls.push(...el.createEl.mock.calls);
+      }
+      if (el.createDiv?.mock?.results) {
+        for (const r of el.createDiv.mock.results) {
+          calls.push(...collectCreateElCalls(r.value));
+        }
+      }
+      return calls;
+    }
+
+    const allCalls = collectCreateElCalls(panelContainer);
+    const generateTagBtn = allCalls.find(
+      (c) => c[0] === 'button' && (c[1] as { text?: string })?.text === 'Generate for new tag'
+    );
+    expect(generateTagBtn).toBeDefined();
   });
 
   it('Tags panel renders files found in _self-tests/tags/', () => {
-    // Setup: mock app.vault.getFiles() to return files in _self-tests/tags/
-    // Assert: tag names rendered from file paths
-    expect(true).toBe(false);
+    const tagFile = new TFile('_self-tests/tags/python.md');
+    const { view } = createTestSidebar({
+      activeTab: 'tags',
+      vaultFiles: [tagFile],
+    });
+    view.refresh();
+
+    const panelContainer = (view.contentEl.createDiv as jest.Mock).mock.results[0]!.value;
+
+    // Collect all createSpan calls to find tag name 'python'
+    function collectCreateSpanCalls(el: {
+      createSpan?: jest.Mock;
+      createDiv?: jest.Mock;
+      createEl?: jest.Mock;
+    }): unknown[][] {
+      const calls: unknown[][] = [];
+      if (el.createSpan?.mock?.calls) {
+        calls.push(...el.createSpan.mock.calls);
+      }
+      if (el.createDiv?.mock?.results) {
+        for (const r of el.createDiv.mock.results) {
+          calls.push(...collectCreateSpanCalls(r.value));
+        }
+      }
+      if (el.createEl?.mock?.results) {
+        for (const r of el.createEl.mock.results) {
+          calls.push(...collectCreateSpanCalls(r.value));
+        }
+      }
+      return calls;
+    }
+
+    const allSpanCalls = collectCreateSpanCalls(panelContainer);
+    const pythonSpan = allSpanCalls.find(
+      (c) => (c[0] as { text?: string })?.text === 'python'
+    );
+    expect(pythonSpan).toBeDefined();
   });
 
   it('Links panel renders files found in _self-tests/links/', () => {
-    // Setup: mock app.vault.getFiles() to return files in _self-tests/links/
-    // Assert: link entry names rendered from file basenames
-    expect(true).toBe(false);
+    const linkFile = new TFile('_self-tests/links/my-moc.md');
+    const { view } = createTestSidebar({
+      activeTab: 'links',
+      vaultFiles: [linkFile],
+    });
+    view.refresh();
+
+    const panelContainer = (view.contentEl.createDiv as jest.Mock).mock.results[0]!.value;
+
+    function collectCreateSpanCalls(el: {
+      createSpan?: jest.Mock;
+      createDiv?: jest.Mock;
+      createEl?: jest.Mock;
+    }): unknown[][] {
+      const calls: unknown[][] = [];
+      if (el.createSpan?.mock?.calls) {
+        calls.push(...el.createSpan.mock.calls);
+      }
+      if (el.createDiv?.mock?.results) {
+        for (const r of el.createDiv.mock.results) {
+          calls.push(...collectCreateSpanCalls(r.value));
+        }
+      }
+      if (el.createEl?.mock?.results) {
+        for (const r of el.createEl.mock.results) {
+          calls.push(...collectCreateSpanCalls(r.value));
+        }
+      }
+      return calls;
+    }
+
+    const allSpanCalls = collectCreateSpanCalls(panelContainer);
+    const mocSpan = allSpanCalls.find(
+      (c) => (c[0] as { text?: string })?.text === 'my-moc'
+    );
+    expect(mocSpan).toBeDefined();
   });
 
   it('Tags panel shows spinner when generatingTags has matching tag', () => {
-    // Setup: add tag to generationService.generatingTags
-    // Assert: spinner element created, not regenerate button
-    expect(true).toBe(false);
+    const tagFile = new TFile('_self-tests/tags/python.md');
+    const { view } = createTestSidebar({
+      activeTab: 'tags',
+      vaultFiles: [tagFile],
+      generatingTags: ['python'],
+    });
+    view.refresh();
+
+    const panelContainer = (view.contentEl.createDiv as jest.Mock).mock.results[0]!.value;
+
+    // Collect all createDiv calls to find spinner div
+    function collectCreateDivCalls(el: {
+      createDiv?: jest.Mock;
+    }): unknown[][] {
+      const calls: unknown[][] = [];
+      if (el.createDiv?.mock?.calls) {
+        calls.push(...el.createDiv.mock.calls);
+        for (const r of el.createDiv.mock.results) {
+          calls.push(...collectCreateDivCalls(r.value));
+        }
+      }
+      return calls;
+    }
+
+    const allDivCalls = collectCreateDivCalls(panelContainer);
+    const spinnerDiv = allDivCalls.find(
+      (c) => (c[0] as { cls?: string })?.cls === 'active-recall-loading'
+    );
+    expect(spinnerDiv).toBeDefined();
   });
 
   it('Links panel shows spinner when generatingLinks has matching basename', () => {
-    // Setup: add basename to generationService.generatingLinks
-    // Assert: spinner element created, not regenerate button
-    expect(true).toBe(false);
+    const linkFile = new TFile('_self-tests/links/my-moc.md');
+    const { view } = createTestSidebar({
+      activeTab: 'links',
+      vaultFiles: [linkFile],
+      generatingLinks: ['my-moc'],
+    });
+    view.refresh();
+
+    const panelContainer = (view.contentEl.createDiv as jest.Mock).mock.results[0]!.value;
+
+    function collectCreateDivCalls(el: {
+      createDiv?: jest.Mock;
+    }): unknown[][] {
+      const calls: unknown[][] = [];
+      if (el.createDiv?.mock?.calls) {
+        calls.push(...el.createDiv.mock.calls);
+        for (const r of el.createDiv.mock.results) {
+          calls.push(...collectCreateDivCalls(r.value));
+        }
+      }
+      return calls;
+    }
+
+    const allDivCalls = collectCreateDivCalls(panelContainer);
+    const spinnerDiv = allDivCalls.find(
+      (c) => (c[0] as { cls?: string })?.cls === 'active-recall-loading'
+    );
+    expect(spinnerDiv).toBeDefined();
   });
 });

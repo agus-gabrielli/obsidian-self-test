@@ -102,3 +102,54 @@
   font-size: 0.8em;
   color: var(--text-muted);
 }
+
+.active-recall-tab-bar {
+  display: flex;
+  gap: 0;
+  margin-bottom: 12px;
+  border-bottom: 1px solid var(--background-modifier-border);
+}
+
+.active-recall-tab {
+  flex: 1;
+  padding: 6px 0;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  font-size: 0.85em;
+  color: var(--text-muted);
+  transition: color 0.15s, border-color 0.15s;
+  text-align: center;
+}
+
+.active-recall-tab:hover {
+  color: var(--text-normal);
+}
+
+.active-recall-tab--active {
+  color: var(--text-normal);
+  font-weight: 600;
+  border-bottom-color: var(--interactive-accent);
+}
+
+.active-recall-row--clickable {
+  cursor: pointer;
+}
+
+.active-recall-row--clickable:hover {
+  background: var(--background-modifier-hover);
+  border-radius: 4px;
+}
+
+.active-recall-generate-new-btn {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.active-recall-empty-state {
+  font-size: 0.85em;
+  color: var(--text-muted);
+  text-align: center;
+  padding: 20px 8px;
+}
