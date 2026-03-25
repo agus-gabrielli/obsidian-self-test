@@ -311,6 +311,10 @@ export async function writeOutput(app: App, folderPath: string, content: string)
 export class GenerationService {
     /** Folders currently being generated - read by sidebar for spinner display. */
     public readonly generatingFolders = new Set<string>();
+    /** Tags currently being generated - read by sidebar for spinner display. */
+    public readonly generatingTags = new Set<string>();
+    /** Link root basenames currently being generated - read by sidebar for spinner display. */
+    public readonly generatingLinks = new Set<string>();
 
     constructor(
         private app: App,
@@ -320,8 +324,9 @@ export class GenerationService {
 
     async generate(spec: CollectionSpec): Promise<void> {
         const providerCfg = this.settings[this.settings.provider];
-        const trackingKey = spec.mode === 'folder' ? spec.folderPath : null;
-        if (trackingKey) this.generatingFolders.add(trackingKey);
+        if (spec.mode === 'folder') this.generatingFolders.add(spec.folderPath);
+        if (spec.mode === 'tag') this.generatingTags.add(spec.tag.replace(/^#/, ''));
+        if (spec.mode === 'links') this.generatingLinks.add(spec.rootFile.basename);
         this.statusBarItem.setText('Generating self-test...');
         try {
             let files: TFile[];
@@ -403,7 +408,9 @@ export class GenerationService {
                 : 'Generation failed. Check your settings and try again.';
             new Notice(msg);
         } finally {
-            if (trackingKey) this.generatingFolders.delete(trackingKey);
+            if (spec.mode === 'folder') this.generatingFolders.delete(spec.folderPath);
+            if (spec.mode === 'tag') this.generatingTags.delete(spec.tag.replace(/^#/, ''));
+            if (spec.mode === 'links') this.generatingLinks.delete(spec.rootFile.basename);
             this.statusBarItem.setText('');
         }
     }

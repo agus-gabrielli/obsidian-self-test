@@ -48,6 +48,7 @@ export interface ActiveRecallSettings {
     generateConceptMap: boolean;
     customInstructions: string;
     singleNoteOutputMode: 'same-folder' | 'centralized';
+    activeTab: 'folders' | 'tags' | 'links';
 }
 
 export const DEFAULT_SETTINGS: ActiveRecallSettings = {
@@ -61,6 +62,7 @@ export const DEFAULT_SETTINGS: ActiveRecallSettings = {
     generateConceptMap: true,
     customInstructions: '',
     singleNoteOutputMode: 'centralized',
+    activeTab: 'folders',
 };
 
 /**
