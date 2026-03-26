@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Phases
 current_phase: 11
-current_plan: 2
-status: executing
-last_updated: "2026-03-26T00:47:40.825Z"
+current_plan: 3
+status: complete
+last_updated: "2026-03-26T01:17:00.000Z"
 last_activity: 2026-03-26
 progress:
   total_phases: 11
-  completed_phases: 10
+  completed_phases: 11
   total_plans: 29
-  completed_plans: 28
+  completed_plans: 29
 ---
 
 # Session State
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Milestone:** v2.0 Multi-Provider & Flexible Collection
 **Current phase:** 11
-**Current plan:** 2
-**Status:** Executing Phase 11
-**Progress bar:** [██████████] 97% (28/29 plans complete)
+**Current plan:** 3
+**Status:** Phase 11 complete
+**Progress bar:** [██████████] 100% (29/29 plans complete)
 **Last activity:** 2026-03-26
 
 ## v2.0 Phase Summary
@@ -40,6 +40,11 @@ See: .planning/PROJECT.md (updated 2026-03-21)
 | 9 - Flexible Note Collection | Generate self-tests from notes by tag, by linked notes, or single note | COL-01 through COL-07 |
 | 10 - Sidebar Redesign | Sidebar supports all four modes with clear navigation | UI-03, UI-04 |
 | 11 - v2.0 Release | README updated; store submission PR open | DIST-03, DIST-04 |
+
+## Key Architecture Decisions (from Phase 11-03 execution)
+
+- 2026-03-26 (11-03): NotePickerModal filters parent.path === '/' to suppress vault-root files showing as bare slash in picker suggestions
+- 2026-03-26 (11-03): Concept map prompt reinforced to always output '## Concept Map' H2 heading for consistent section detection
 
 ## Key Architecture Decisions (from Phase 11-02 execution)
 
@@ -188,6 +193,8 @@ See: .planning/PROJECT.md (updated 2026-03-21)
 - 2026-03-25: Stopped at - Completed 11-01-PLAN.md
 - 2026-03-26: Executed 11-02 (NotePickerModal + LinkConfirmModal two-step picker, replace LinkedNotesPickerModal) - 1 task, 1 commit (27780c8) - 137 tests pass, 0 TS errors
 - 2026-03-26: Stopped at - Completed 11-02-PLAN.md
+- 2026-03-26: Executed 11-03 (build verification + human UAT) - 2 tasks (auto + human-verify), 1 fix commit (e7c0710) - 137 tests pass, 0 TS errors, 33K bundle, all 17 UAT points approved
+- 2026-03-26: Stopped at - Completed 11-03-PLAN.md (Phase 11 complete)
 
 ## Accumulated Context
 
