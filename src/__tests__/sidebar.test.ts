@@ -443,4 +443,82 @@ describe('tabbed sidebar', () => {
     );
     expect(spinnerDiv).toBeDefined();
   });
+
+  it('renderSelfTestRow creates a trash button when file exists and not generating', () => {
+    const tagFile = new TFile('_self-tests/tags/python.md');
+    const { view } = createTestSidebar({
+      activeTab: 'tags',
+      vaultFiles: [tagFile],
+    });
+    view.refresh();
+
+    const panelContainer = (view.contentEl.createDiv as jest.Mock).mock.results[0]!.value;
+
+    function collectCreateElCalls(el: { createEl?: jest.Mock; createDiv?: jest.Mock }): unknown[][] {
+      const calls: unknown[][] = [];
+      if (el.createEl?.mock?.calls) calls.push(...el.createEl.mock.calls);
+      if (el.createDiv?.mock?.results) {
+        for (const r of el.createDiv.mock.results) calls.push(...collectCreateElCalls(r.value));
+      }
+      return calls;
+    }
+
+    const allElCalls = collectCreateElCalls(panelContainer);
+    const trashBtn = allElCalls.find(
+      (c) => c[0] === 'button' && (c[1] as { cls?: string })?.cls?.includes('active-recall-trash-btn')
+    );
+    expect(trashBtn).toBeDefined();
+  });
+
+  it('renderSelfTestRow does NOT create trash button when isGenerating is true', () => {
+    const tagFile = new TFile('_self-tests/tags/python.md');
+    const { view } = createTestSidebar({
+      activeTab: 'tags',
+      vaultFiles: [tagFile],
+      generatingTags: ['python'],
+    });
+    view.refresh();
+
+    const panelContainer = (view.contentEl.createDiv as jest.Mock).mock.results[0]!.value;
+
+    function collectCreateElCalls(el: { createEl?: jest.Mock; createDiv?: jest.Mock }): unknown[][] {
+      const calls: unknown[][] = [];
+      if (el.createEl?.mock?.calls) calls.push(...el.createEl.mock.calls);
+      if (el.createDiv?.mock?.results) {
+        for (const r of el.createDiv.mock.results) calls.push(...collectCreateElCalls(r.value));
+      }
+      return calls;
+    }
+
+    const allElCalls = collectCreateElCalls(panelContainer);
+    const trashBtn = allElCalls.find(
+      (c) => c[0] === 'button' && (c[1] as { cls?: string })?.cls?.includes('active-recall-trash-btn')
+    );
+    expect(trashBtn).toBeUndefined();
+  });
+
+  it('renderSelfTestRow does NOT create trash button for placeholder rows (file is null)', () => {
+    const { view } = createTestSidebar({
+      activeTab: 'tags',
+      generatingTags: ['newTag'],
+    });
+    view.refresh();
+
+    const panelContainer = (view.contentEl.createDiv as jest.Mock).mock.results[0]!.value;
+
+    function collectCreateElCalls(el: { createEl?: jest.Mock; createDiv?: jest.Mock }): unknown[][] {
+      const calls: unknown[][] = [];
+      if (el.createEl?.mock?.calls) calls.push(...el.createEl.mock.calls);
+      if (el.createDiv?.mock?.results) {
+        for (const r of el.createDiv.mock.results) calls.push(...collectCreateElCalls(r.value));
+      }
+      return calls;
+    }
+
+    const allElCalls = collectCreateElCalls(panelContainer);
+    const trashBtn = allElCalls.find(
+      (c) => c[0] === 'button' && (c[1] as { cls?: string })?.cls?.includes('active-recall-trash-btn')
+    );
+    expect(trashBtn).toBeUndefined();
+  });
 });

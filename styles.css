@@ -184,3 +184,28 @@
   transform: translate(-50%, -50%) scale(0.95);
   transition: opacity 0.4s ease, transform 0.4s ease;
 }
+
+.active-recall-trash-btn {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+  padding: 4px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.active-recall-trash-btn:hover {
+  color: var(--text-error);
+  background: var(--background-modifier-hover);
+}
+
+.active-recall-confirm-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}

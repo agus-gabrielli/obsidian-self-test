@@ -95,6 +95,7 @@ export interface App {
     getFiles(): TFile[];
     getFileByPath(path: string): TFile | null;
     createFolder(path: string): Promise<void>;
+    trash(file: TFile | TFolder, system: boolean): Promise<void>;
   };
   workspace: {
     getLeavesOfType(type: string): WorkspaceLeaf[];
@@ -126,6 +127,7 @@ export function createMockApp() {
       getFiles: jest.fn().mockReturnValue([]),
       getFileByPath: jest.fn().mockReturnValue(null),
       createFolder: jest.fn().mockResolvedValue(undefined),
+      trash: jest.fn().mockResolvedValue(undefined),
     },
     workspace: {
       getLeavesOfType: jest.fn().mockReturnValue([]),
@@ -214,6 +216,16 @@ export class SuggestModal<T> {
   open(): void {}
 }
 
+export class FuzzySuggestModal<T> extends SuggestModal<{ item: T }> {
+  constructor(app: unknown) { super(app); }
+  getItems(): T[] { return []; }
+  getItemText(_item: T): string { return ''; }
+  onChooseItem(_item: T, _evt: MouseEvent | KeyboardEvent): void {}
+  getSuggestions(_query: string): { item: T }[] { return []; }
+  renderSuggestion(_item: { item: T }, _el: HTMLElement): void {}
+  onChooseSuggestion(_item: { item: T }, _evt: MouseEvent | KeyboardEvent): void {}
+}
+
 export class Modal {
   app: unknown;
   contentEl: ReturnType<typeof makeMockEl>;
@@ -243,3 +255,5 @@ export function createMockWorkspaceLeaf() {
   const leaf = new WorkspaceLeaf();
   return leaf;
 }
+
+export function setIcon(_el: HTMLElement, _iconId: string): void {}

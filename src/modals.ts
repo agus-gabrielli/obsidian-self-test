@@ -197,3 +197,39 @@ export class LinkedNotesPickerModal extends Modal {
         this.contentEl.empty();
     }
 }
+
+export class DeleteConfirmModal extends Modal {
+    private filePath: string;
+    private onConfirm: () => void;
+
+    constructor(app: App, filePath: string, onConfirm: () => void) {
+        super(app);
+        this.filePath = filePath;
+        this.onConfirm = onConfirm;
+    }
+
+    onOpen(): void {
+        const { contentEl } = this;
+        contentEl.empty();
+        contentEl.createEl('h3', { text: 'Delete self-test?' });
+        contentEl.createEl('p', { text: `This will delete: ${this.filePath}` });
+
+        const btnContainer = contentEl.createDiv({ cls: 'active-recall-confirm-buttons' });
+
+        const cancelBtn = btnContainer.createEl('button', { text: 'Cancel' });
+        cancelBtn.addEventListener('click', () => this.close());
+
+        const deleteBtn = btnContainer.createEl('button', {
+            text: 'Delete',
+            cls: 'mod-warning',
+        });
+        deleteBtn.addEventListener('click', () => {
+            this.onConfirm();
+            this.close();
+        });
+    }
+
+    onClose(): void {
+        this.contentEl.empty();
+    }
+}

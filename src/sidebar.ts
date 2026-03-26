@@ -1,7 +1,7 @@
-import { ItemView, WorkspaceLeaf, App, TFile, TFolder, Menu, TAbstractFile } from 'obsidian';
+import { ItemView, WorkspaceLeaf, App, TFile, TFolder, Menu, TAbstractFile, setIcon } from 'obsidian';
 import { GenerationService } from './generation';
 import type ActiveRecallPlugin from './main';
-import { TagPickerModal, LinkedNotesPickerModal, FolderPickerModal } from './modals';
+import { TagPickerModal, LinkedNotesPickerModal, FolderPickerModal, DeleteConfirmModal } from './modals';
 import { isSelfTestFile } from './collectors';
 
 export const VIEW_TYPE_ACTIVE_RECALL = 'active-recall-panel';
@@ -221,7 +221,7 @@ export class ActiveRecallSidebarView extends ItemView {
 
     // Placeholder rows for folders being generated that have no self-test yet
     for (const folderPath of generatingAndNew) {
-      this.renderSelfTestRow(section, folderPath, null, null, true, () => this.generateForFolder(folderPath));
+      this.renderSelfTestRow(section, folderPath, null, null, true, () => this.generateForFolder(folderPath), null);
     }
 
     for (const status of withSelfTest) {
@@ -231,7 +231,8 @@ export class ActiveRecallSidebarView extends ItemView {
         status.selfTestFile ? getLastGeneratedDate(status.selfTestFile) : null,
         status.selfTestFile,
         this.generationService.generatingFolders.has(status.folder.path),
-        () => this.generateForFolder(status.folder.path)
+        () => this.generateForFolder(status.folder.path),
+        status.selfTestFile ? () => this.deleteSelfTest(status.selfTestFile!) : null
       );
     }
   }
@@ -274,7 +275,7 @@ export class ActiveRecallSidebarView extends ItemView {
 
     // Placeholder rows for tags being generated with no file yet
     for (const tag of generatingAndNew) {
-      this.renderSelfTestRow(section, tag, null, null, true, () => this.generateForTag(tag));
+      this.renderSelfTestRow(section, tag, null, null, true, () => this.generateForTag(tag), null);
     }
 
     for (const file of tagFiles) {
@@ -286,7 +287,8 @@ export class ActiveRecallSidebarView extends ItemView {
         getLastGeneratedDate(file),
         file,
         this.generationService.generatingTags.has(tagName),
-        () => this.generateForTag(tagName)
+        () => this.generateForTag(tagName),
+        () => this.deleteSelfTest(file)
       );
     }
   }
@@ -329,7 +331,7 @@ export class ActiveRecallSidebarView extends ItemView {
 
     // Placeholder rows for links being generated with no file yet
     for (const basename of generatingAndNew) {
-      this.renderSelfTestRow(section, basename, null, null, true, () => {});
+      this.renderSelfTestRow(section, basename, null, null, true, () => {}, null);
     }
 
     for (const file of linkFiles) {
@@ -339,7 +341,8 @@ export class ActiveRecallSidebarView extends ItemView {
         getLastGeneratedDate(file),
         file,
         this.generationService.generatingLinks.has(file.basename),
-        () => this.regenerateForLinks(file)
+        () => this.regenerateForLinks(file),
+        () => this.deleteSelfTest(file)
       );
     }
   }
@@ -350,7 +353,8 @@ export class ActiveRecallSidebarView extends ItemView {
     date: string | null,
     file: TFile | null,
     isGenerating: boolean,
-    onRegenerate: () => void
+    onRegenerate: () => void,
+    onDelete: (() => void) | null
   ): void {
     const row = container.createDiv({ cls: 'active-recall-folder-row' });
     const info = row.createDiv({ cls: 'active-recall-folder-info' });
@@ -377,6 +381,25 @@ export class ActiveRecallSidebarView extends ItemView {
       const btn = row.createEl('button', { text: btnText, cls: 'active-recall-btn' });
       btn.addEventListener('click', onRegenerate);
     }
+
+    if (!isGenerating && file) {
+      const trashBtn = row.createEl('button', {
+        cls: 'active-recall-trash-btn clickable-icon',
+        attr: { 'aria-label': 'Delete self-test' },
+      });
+      setIcon(trashBtn, 'trash-2');
+      trashBtn.addEventListener('click', (evt: MouseEvent) => {
+        evt.stopPropagation();
+        if (onDelete) onDelete();
+      });
+    }
+  }
+
+  private deleteSelfTest(file: TFile): void {
+    new DeleteConfirmModal(this._app, file.path, async () => {
+      await this._app.vault.trash(file, true);
+      this.refresh();
+    }).open();
   }
 
   private showGeneratingToast(): void {

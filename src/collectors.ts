@@ -246,10 +246,6 @@ export function buildFrontmatter(spec: CollectionSpec, collectedFiles: TFile[]):
 
     return [
         '---',
-        'last_review: null',
-        'next_review: null',
-        'review_count: 0',
-        'review_interval_days: 1',
         `source_mode: ${sourceMode}`,
         `source: "${source}"`,
         `source_notes: [${sourceNotes}]`,

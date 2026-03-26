@@ -524,6 +524,10 @@ describe('buildFrontmatter', () => {
     expect(result).toContain('source: "python"');
     expect(result).toContain('[[notes/note1|note1]]');
     expect(result).toContain('[[notes/note2|note2]]');
+    expect(result).not.toContain('last_review');
+    expect(result).not.toContain('next_review');
+    expect(result).not.toContain('review_count');
+    expect(result).not.toContain('review_interval_days');
   });
 
   test('links mode uses root basename as source', () => {
