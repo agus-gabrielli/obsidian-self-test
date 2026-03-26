@@ -1,5 +1,5 @@
 import { App, SuggestModal, FuzzySuggestModal, TFile, TFolder, Modal, Notice } from 'obsidian';
-import { getAllVaultTags, collectNotesByLinks } from './collectors';
+import { getAllVaultTags, collectNotesByLinks, isSelfTestFile } from './collectors';
 
 export class TagPickerModal extends SuggestModal<string> {
     private tagCounts: Map<string, number>;
@@ -91,7 +91,7 @@ export class NotePickerModal extends FuzzySuggestModal<TFile> {
 
     getItems(): TFile[] {
         return this.app.vault.getFiles().filter(
-            (f: TFile) => f.extension === 'md'
+            (f: TFile) => f.extension === 'md' && !isSelfTestFile(f)
         );
     }
 
