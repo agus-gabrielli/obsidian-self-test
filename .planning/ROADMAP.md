@@ -29,7 +29,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 8: Multi-Provider LLM Dispatch** - Plugin successfully calls Gemini and Claude APIs in addition to OpenAI; provider-specific errors are surfaced with the provider name (completed 2026-03-21)
 - [ ] **Phase 9: Flexible Note Collection** - Users can generate self-tests from notes by tag, by linked notes from a root note, or from a single note
 - [x] **Phase 10: Sidebar Redesign** - Sidebar supports all four generation modes with clear navigation and shows tag/link-based self-tests alongside folder-based ones (completed 2026-03-25)
-- [ ] **Phase 11: v2.0 Release** - README updated with multi-provider and collection mode documentation; plugin passes Obsidian store review and PR is submitted
+- [ ] **Phase 11: Sidebar Delete and Native Picker** - Trash icon on sidebar self-test entries with confirmation, and linked notes picker replaced with native FuzzySuggestModal
+- [ ] **Phase 12: v2.0 Release** - README updated with multi-provider and collection mode documentation; plugin passes Obsidian store review and PR is submitted
 
 ---
 
@@ -191,9 +192,22 @@ Plans:
 - [x] 10-02-PLAN.md - Rewrite sidebar.ts with tab bar and mode panels, update main.ts constructor, add CSS (Wave 2)
 - [x] 10-03-PLAN.md - Production build and human-verify tabbed sidebar in Obsidian (Wave 3)
 
-### Phase 11: v2.0 Release
-**Goal**: README documents multi-provider setup and all new collection modes clearly; the plugin passes Obsidian community store review requirements and the submission PR is open against obsidianmd/obsidian-releases
+### Phase 11: Sidebar Delete and Native Picker
+**Goal**: Users can delete self-test files directly from the sidebar via a trash icon (with confirmation), and the linked notes picker uses Obsidian's native FuzzySuggestModal for a smoother selection experience
 **Depends on**: Phase 10
+**Requirements**: TBD
+**Success Criteria** (what must be TRUE):
+  1. Each self-test row across all sidebar tabs shows a trash icon next to Regenerate; clicking it prompts for confirmation before deleting the file
+  2. After deleting a self-test, the sidebar updates immediately without manual refresh
+  3. LinkedNotesPickerModal uses Obsidian's native FuzzySuggestModal for note selection, followed by a confirmation modal with depth toggle, preview count, and Generate button (two-step flow)
+**Plans**: TBD
+
+Plans:
+- [ ] TBD
+
+### Phase 12: v2.0 Release
+**Goal**: README documents multi-provider setup and all new collection modes clearly; the plugin passes Obsidian community store review requirements and the submission PR is open against obsidianmd/obsidian-releases
+**Depends on**: Phase 11
 **Requirements**: DIST-03, DIST-04
 **Success Criteria** (what must be TRUE):
   1. README includes setup instructions for Google AI Studio and Anthropic API keys, with links to where users get them; existing OpenAI instructions remain accurate
@@ -207,7 +221,7 @@ Plans:
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 11
+Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10 -> 11 -> 12
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -221,26 +235,11 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 8. Multi-Provider LLM Dispatch | 2/2 | Complete | 2026-03-21 |
 | 9. Flexible Note Collection | 2/3 | In Progress|  |
 | 10. Sidebar Redesign | 4/4 | Complete    | 2026-03-26 |
-| 11. v2.0 Release | 0/TBD | Not started | - |
+| 11. Sidebar Delete and Native Picker | 0/TBD | Not started | - |
+| 12. v2.0 Release | 0/TBD | Not started | - |
 
 ---
 
 ## Backlog
 
-### Phase 999.1: Trash icon on sidebar self-test entries (BACKLOG)
-
-**Goal:** Add a delete button (trash icon) next to Regenerate on each self-test row across all sidebar tabs, with confirmation before deleting the file
-**Requirements:** TBD
-**Plans:** 4/4 plans complete
-
-Plans:
-- [ ] TBD (promote with /gsd:review-backlog when ready)
-
-### Phase 999.2: Linked notes picker native suggest modal (BACKLOG)
-
-**Goal:** Replace the custom search list in LinkedNotesPickerModal with Obsidian's native FuzzySuggestModal for note selection, then show a confirmation modal with depth toggle + preview count + Generate button (two-step flow)
-**Requirements:** TBD
-**Plans:** 0 plans
-
-Plans:
-- [ ] TBD (promote with /gsd:review-backlog when ready)
+No backlog items.
