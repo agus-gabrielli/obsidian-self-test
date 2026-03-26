@@ -82,8 +82,8 @@
 
 ### Sidebar Management
 
-- [ ] **DEL-01**: Each sidebar self-test row shows a trash icon that opens a confirmation modal before deleting the file via vault.trash
-- [ ] **DEL-02**: After deleting a self-test from the sidebar, the sidebar auto-refreshes to remove the deleted row
+- [x] **DEL-01**: Each sidebar self-test row shows a trash icon that opens a confirmation modal before deleting the file via vault.trash
+- [x] **DEL-02**: After deleting a self-test from the sidebar, the sidebar auto-refreshes to remove the deleted row
 
 ### Picker UX
 
@@ -168,8 +168,8 @@
 | COL-07 | Phase 9 | Complete |
 | UI-03 | Phase 10 | Complete |
 | UI-04 | Phase 10 | Complete |
-| DEL-01 | Phase 11 | Pending |
-| DEL-02 | Phase 11 | Pending |
+| DEL-01 | Phase 11 | Complete |
+| DEL-02 | Phase 11 | Complete |
 | PICK-01 | Phase 11 | Pending |
 | DIST-03 | Phase 12 | Pending |
 | DIST-04 | Phase 12 | Pending |

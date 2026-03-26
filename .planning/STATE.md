@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: Phases
-current_phase: 999.1
-current_plan: Not started
-status: planning
-last_updated: "2026-03-26T00:02:28.931Z"
-last_activity: 2026-03-26
+current_phase: 11
+current_plan: 2
+status: executing
+last_updated: "2026-03-25T00:20:00.000Z"
+last_activity: 2026-03-25
 progress:
-  total_phases: 12
+  total_phases: 11
   completed_phases: 10
-  total_plans: 26
-  completed_plans: 26
+  total_plans: 29
+  completed_plans: 27
 ---
 
 # Session State
@@ -20,15 +20,15 @@ progress:
 
 See: .planning/PROJECT.md (updated 2026-03-21)
 **Core value:** Users can generate a structured self-test from any folder of notes in one click, turning passive note review into active recall practice.
-**Current focus:** Phase 10 — sidebar-redesign
+**Current focus:** Phase 11 — sidebar-delete-and-native-picker
 
 ## Position
 
 **Milestone:** v2.0 Multi-Provider & Flexible Collection
-**Current phase:** 999.1
-**Current plan:** Not started
-**Status:** Ready to plan
-**Progress bar:** [██████████] 100% (25/25 plans complete)
+**Current phase:** 11
+**Current plan:** 1
+**Status:** Executing Phase 11
+**Progress bar:** [█████████░] 93% (27/29 plans complete)
 **Last activity:** 2026-03-26
 
 ## v2.0 Phase Summary
@@ -40,6 +40,12 @@ See: .planning/PROJECT.md (updated 2026-03-21)
 | 9 - Flexible Note Collection | Generate self-tests from notes by tag, by linked notes, or single note | COL-01 through COL-07 |
 | 10 - Sidebar Redesign | Sidebar supports all four modes with clear navigation | UI-03, UI-04 |
 | 11 - v2.0 Release | README updated; store submission PR open | DIST-03, DIST-04 |
+
+## Key Architecture Decisions (from Phase 11-01 execution)
+
+- 2026-03-25 (11-01): renderSelfTestRow 7th parameter is `onDelete: (() => void) | null` - null hides trash icon; simpler than a boolean flag
+- 2026-03-25 (11-01): vault.trash(file, true) with system=true respects user's vault trash setting (D-01)
+- 2026-03-25 (11-01): Spaced repetition frontmatter fields removed from buildFrontmatter - always null/0/1, unused, clutter every generated file (D-13)
 
 ## Key Architecture Decisions (from Phase 10-04 execution)
 
@@ -172,6 +178,8 @@ See: .planning/PROJECT.md (updated 2026-03-21)
 - 2026-03-25: Stopped at - Completed 10-02-PLAN.md (Phase 10 complete)
 - 2026-03-25: Executed 10-03 (human verify tabbed sidebar) - 1 auto task (bb77607), checkpoint reached for human verification - 134 tests pass, 0 TS errors, production bundle 31287 bytes
 - 2026-03-25: Executed 10-04 (sidebar UX polish from human-verify feedback) - 1 auto task (d058403), checkpoint reached for human verification - 134 tests pass, 0 TS errors
+- 2026-03-25: Executed 11-01 (trash icon + DeleteConfirmModal + FuzzySuggestModal mock + frontmatter cleanup) - 1 task, 1 commit (eb7fa9f) - 137 tests pass, 0 TS errors
+- 2026-03-25: Stopped at - Completed 11-01-PLAN.md
 
 ## Accumulated Context
 

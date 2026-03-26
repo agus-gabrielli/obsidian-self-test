@@ -203,7 +203,7 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 11-01-PLAN.md - Add trash icon to sidebar rows, DeleteConfirmModal, FuzzySuggestModal mock, tests (Wave 1)
+- [x] 11-01-PLAN.md - Add trash icon to sidebar rows, DeleteConfirmModal, FuzzySuggestModal mock, tests (Wave 1)
 - [ ] 11-02-PLAN.md - Replace LinkedNotesPickerModal with NotePickerModal + LinkConfirmModal two-step flow (Wave 2)
 - [ ] 11-03-PLAN.md - Production build and human-verify delete + native picker in Obsidian (Wave 3)
 
@@ -240,7 +240,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6 -> 7 -> 8 -> 9 -> 10
 | 8. Multi-Provider LLM Dispatch | 2/2 | Complete | 2026-03-21 |
 | 9. Flexible Note Collection | 2/3 | In Progress|  |
 | 10. Sidebar Redesign | 4/4 | Complete    | 2026-03-26 |
-| 11. Sidebar Delete and Native Picker | 0/3 | Not started | - |
+| 11. Sidebar Delete and Native Picker | 1/3 | In Progress|  |
 | 12. v2.0 Release | 0/TBD | Not started | - |
 
 ---
