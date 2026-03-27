@@ -135,12 +135,14 @@ export class SelfTestSidebarView extends ItemView {
     return 'brain-circuit';
   }
 
-  async onOpen(): Promise<void> {
+  onOpen(): Promise<void> {
     this.refresh();
+    return Promise.resolve();
   }
 
-  async onClose(): Promise<void> {
+  onClose(): Promise<void> {
     this.contentEl.empty();
+    return Promise.resolve();
   }
 
   public refresh(): void {

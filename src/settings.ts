@@ -114,8 +114,7 @@ export class SelfTestSettingTab extends PluginSettingTab {
         // Provider dropdown - per PROV-01
         new Setting(containerEl)
             .setName('Provider')
-            // eslint-disable-next-line obsidianmd/ui/sentence-case -- LLM is an acronym
-            .setDesc('LLM provider for self-test generation.')
+            .setDesc('Provider used for self-test generation.')
             .addDropdown(drop => {
                 for (const [key, cfg] of Object.entries(PROVIDER_CONFIG)) {
                     drop.addOption(key, cfg.label);
@@ -131,7 +130,7 @@ export class SelfTestSettingTab extends PluginSettingTab {
         // API Key - per PROV-02, provider-specific placeholder
         new Setting(containerEl)
             .setName('API key')
-            .setDesc('Stored in data.json inside your vault. Do not commit this file to a public git repository.') // eslint-disable-line obsidianmd/ui/sentence-case -- multi-sentence description
+            .setDesc('Stored locally in your vault\'s data.json file.')
             .addText(text => {
                 text.inputEl.type = 'password';
                 text
@@ -186,10 +185,9 @@ export class SelfTestSettingTab extends PluginSettingTab {
 
         new Setting(containerEl)
             .setName('Language')
-            // eslint-disable-next-line obsidianmd/ui/sentence-case -- proper nouns (Spanish, Japanese) and multi-sentence
-            .setDesc("Leave empty to match the language of your notes automatically. Enter a language name (e.g. 'Spanish', 'Japanese') to override.")
+            .setDesc('Leave empty to auto-detect, or enter a language name to override.')
             .addText(text => text
-                .setPlaceholder('e.g. Spanish') // eslint-disable-line obsidianmd/ui/sentence-case -- proper noun
+                .setPlaceholder('Language name')
                 .setValue(this.plugin.settings.language)
                 .onChange(async (value) => {
                     this.plugin.settings.language = value;
@@ -232,11 +230,10 @@ export class SelfTestSettingTab extends PluginSettingTab {
 
         new Setting(containerEl)
             .setName('Custom instructions')
-            .setDesc('Optional. Appended to the LLM prompt.') // eslint-disable-line obsidianmd/ui/sentence-case -- LLM acronym, multi-sentence
+            .setDesc('Optional extra instructions appended to the prompt.')
             .addTextArea(text => {
                 text
-                    // eslint-disable-next-line obsidianmd/ui/sentence-case -- LLM acronym, multi-sentence with example
-                    .setPlaceholder("Optional. Appended to the LLM prompt. Example: 'Focus on practical applications.'")
+                    .setPlaceholder("Focus on practical applications, ...")
                     .setValue(this.plugin.settings.customInstructions);
                 text.inputEl.addEventListener('blur', () => {
                     this.plugin.settings.customInstructions = text.getValue();
